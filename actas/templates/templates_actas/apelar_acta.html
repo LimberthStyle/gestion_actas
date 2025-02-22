@@ -1,0 +1,6 @@
+<h1>Apelar Acta {{ acta.n_acta }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enviar Apelación</button>
+</form>

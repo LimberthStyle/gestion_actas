@@ -1,0 +1,110 @@
+/* Archivo: base.css */
+
+/* Estilos generales */
+body {
+    padding-top: 56px; /* Ajuste para el navbar fijo */
+    margin: 0;
+    background-color: #C0C0C0; /* Color plateado para el fondo */
+    height: 100vh;
+    color: white;
+    font-family: Arial, sans-serif; /* Fuente predeterminada */
+}
+
+/* Estilos para el navbar */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Asegura que esté por encima del sidebar */
+    min-height: 56px; /* Altura mínima del navbar */
+    padding: 0 15px; /* Añade un padding horizontal */
+}
+.navbar-brand {
+    margin-right: auto; /* Mueve el logo al extremo izquierdo */
+}
+.navbar-brand img {
+    height: 40px; /* Altura de la imagen del logo */
+    width: auto; /* Mantiene la proporción de la imagen */
+}
+
+.navbar-text-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    color: white; /* Color del texto */
+}
+
+.navbar-subtext {
+    position: absolute;
+    left: 50%;
+    top: 70%; /* Ajusta esta posición según sea necesario */
+    transform: translateX(-50%);
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    color: rgba(255, 255, 255, 0.7); /* Color con menor contraste */
+    font-size: 0.85em; /* Tamaño de letra más pequeño */
+}
+
+.navbar-nav .nav-item.dropdown .dropdown-menu {
+    right: 0;
+    left: auto;
+}
+
+/* Estilos para el footer */
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%; /* Ocupa todo el ancho de la pantalla */
+    height: 60px; /* Altura del footer */
+    line-height: 60px; /* Centra el texto verticalmente */
+    background-color: #343a40; /* Color de fondo */
+    text-align: center; /* Centra el texto horizontalmente */
+    z-index: 998; /* Por debajo del sidebar */
+    margin: 0; /* Elimina márgenes predeterminados */
+    padding: 0; /* Elimina paddings predeterminados */
+    box-sizing: border-box; /* Incluye padding y border en el ancho y alto */
+}
+
+.footer a {
+    color: #ff7f50; /* Color del enlace */
+    text-decoration: none; /* Elimina el subrayado del enlace */
+}
+
+.footer a:hover {
+    color: white; /* Cambia el color al pasar el mouse */
+}
+
+/* Estilos para el contenedor principal */
+.contenedor-principal {
+    background: inherit;
+    height: 100%;
+    width: 100%;
+    padding-top: 20px; /* Añade un padding superior */
+}
+
+/* Estilos para el texto de la marca */
+.brand-text {
+    font-family: 'Cooper Black', sans-serif;
+    color: #ff7f50; /* Color naranja para el texto */
+    font-weight: bold;
+}
+
+/* Estilos para el enlace DRTC */
+.DRTC {
+    color: #ff7f50; /* Color naranja para el enlace */
+}
+
+/* Estilos para los enlaces del navbar */
+.nav-link {
+    color: #ff7f50; /* Color naranja para los enlaces */
+    font-family: 'Constantia', sans-serif;
+}
+
+.nav-link:hover {
+    color: white; /* Cambia el color al pasar el mouse */
+}

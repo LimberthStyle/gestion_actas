@@ -1,0 +1,65 @@
+/* Archivo: login.css */
+
+body {
+    background: #C0C0C0;
+    color: white;
+}
+
+.card {
+    background: rgba(0, 0, 0, 0.8);
+    border: none;
+}
+
+.card-header {
+    background: #343a40;
+    color: #ff7f50;
+}
+
+.input-group-text {
+    background-color: #343a40;
+    color: white;
+}
+
+.btn-primary {
+    background-color: #ff7f50;
+    border-color: #ff7f50;
+}
+
+.btn-primary:hover {
+    background-color: #4682b4;
+    border-color: #4682b4;
+}
+
+a {
+    color: #ff7f50;
+}
+
+a:hover {
+    color: #4682b4;
+}
+
+.mt-3 {
+    color: white;
+}
+
+.d.grid {
+    color: white;
+}
+
+/* Estilos para centrar las imágenes */
+.imagen-container {
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    margin-top: 20px; /* Espacio entre el formulario y las imágenes */
+}
+
+.imagen {
+    display: flex;
+    gap: 20px; /* Espacio entre las imágenes */
+}
+
+.imagen img {
+    width: 100px; /* Ajusta el tamaño de las imágenes */
+    height: auto; /* Mantiene la proporción de las imágenes */
+}

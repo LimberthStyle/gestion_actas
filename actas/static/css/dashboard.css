@@ -1,0 +1,94 @@
+/* Archivo: dashboard.css */
+
+/* Estilos para el sidebar */
+.sidebar {
+    position: fixed;
+    top: 56px; /* Altura del navbar */
+    left: 0;
+    width: 250px; /* Ancho del sidebar */
+    height: calc(100vh - 116px); /* Altura total menos navbar y footer */
+    background-color: #343a40; /* Color de fondo */
+    z-index: 999; /* Por debajo del navbar (z-index: 1000) y por encima del footer */
+    padding: 10px;
+    overflow-y: auto; /* Permite el desplazamiento vertical si el contenido es largo */
+    transition: width 0.3s ease; /* Animación para colapsar/expandir */
+}
+
+.sidebar.collapsed {
+    width: 60px; /* Ancho colapsado */
+}
+
+.sidebar ul {
+    list-style-type: none; /* Elimina los puntos de la lista */
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px; /* Espacio entre elementos de la lista */
+}
+
+.sidebar ul li a {
+    color: white; /* Color del texto */
+    text-decoration: none; /* Elimina el subrayado */
+    display: flex; /* Usa flexbox para alinear icono y texto */
+    align-items: center; /* Centra verticalmente */
+    padding: 10px; /* Añade un padding interno */
+}
+
+.sidebar ul li a:hover {
+    background-color: #495057; /* Cambia el color de fondo al pasar el mouse */
+    color: #ff7f50;
+}
+
+.sidebar ul li a i {
+    margin-right: 20px; /* Espacio entre el icono y el texto */
+}
+
+/* Ocultar el texto cuando el sidebar está colapsado */
+.sidebar.collapsed .menu-text {
+    display: none;
+}
+
+/* Ajustar el tamaño de los iconos cuando el sidebar está colapsado */
+.sidebar.collapsed ul li a i {
+    margin-right: 0; /* Elimina el margen derecho */
+    font-size: 1.2em; /* Aumenta el tamaño de los iconos */
+}
+
+/* Estilos para el contenido desplegable */
+.dropdown-content {
+    display: none; /* Oculta el contenido desplegable por defecto */
+    padding-left: 20px; /* Añade un padding izquierdo */
+}
+
+.dropdown-content.show {
+    display: block; /* Muestra el contenido desplegable */
+}
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: transparent;
+    padding: 8px;
+}
+
+.sidebar-toggle {
+    color: white;
+    cursor: pointer;
+    padding: 8px;
+    border: none; /* Sin borde */
+}
+.sidebar-text {
+    color: white;
+    transition: opacity 0.3s ease;
+    margin-right: auto; /* Alinear el texto a la izquierda */
+}
+
+.sidebar-reduced .sidebar-text {
+    opacity: 0; /* Esconde el texto cuando el sidebar está reducido */
+}
+.sidebar-reduced .sidebar-toggle,
+.sidebar-reduced ul li a i {
+    margin: 0 auto; /* Centrar iconos y toggle en el sidebar reducido */
+}
