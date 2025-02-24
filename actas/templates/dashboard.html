@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% load static %}
 
 {% block content %}
@@ -12,59 +13,27 @@
         </div>
         <ul class="contenedor-menu">
             <li>
-                <a href="#" onclick="toggleDropdown('actas')">
+                <a href="#actas" onclick="toggleDropdown('actas')">
                     <i class="fas fa-file-alt"></i> <!-- Icono de actas -->
                     <span class="menu-text">ACTAS</span>
                 </a>
-                <div id="actas" class="dropdown-content">
-                    <a href="{% url 'registrar_acta' %}">
-                        <i class="fas fa-plus"></i> <!-- Icono de agregar -->
-                        <span class="menu-text">Registrar Acta</span>
-                    </a>
-                    <a href="{% url 'lista_actas' %}">
-                        <i class="fas fa-list"></i> <!-- Icono de lista -->
-                        <span class="menu-text">Ver Actas</span>
-                    </a>
-                </div>
-            </li>
-            <li>
-                <a href="#" onclick="toggleDropdown('conductores')">
+
+                <a href="#conductores" onclick="toggleDropdown('conductores')">
                     <i class="fas fa-user"></i> <!-- Icono de conductores -->
                     <span class="menu-text">CONDUCTORES</span>
                 </a>
-                <div id="conductores" class="dropdown-content">
-                    <a href="{% url 'registrar_conductor' %}">
-                        <i class="fas fa-plus"></i> <!-- Icono de agregar -->
-                        <span class="menu-text">Registrar Conductor</span>
-                    </a>
-                </div>
-            </li>
-            <li>
-                <a href="#" onclick="toggleDropdown('vehiculos')">
+
+                <a href="#vehiculos" onclick="toggleDropdown('vehiculos')">
                     <i class="fas fa-car"></i> <!-- Icono de vehículos -->
                     <span class="menu-text">VEHÍCULOS</span>
                 </a>
-                <div id="vehiculos" class="dropdown-content">
-                    <a href="{% url 'registrar_vehiculo' %}">
-                        <i class="fas fa-plus"></i> <!-- Icono de agregar -->
-                        <span class="menu-text">Registrar Vehículo</span>
-                    </a>
-                </div>
-            </li>
-            <li>
-                <a href="#" onclick="toggleDropdown('infracciones')">
+
+                <a href="#infracciones" onclick="toggleDropdown('infracciones')">
                     <i class="fas fa-exclamation-triangle"></i> <!-- Icono de infracciones -->
                     <span class="menu-text">INFRACCIONES</span>
                 </a>
-                <div id="infracciones" class="dropdown-content">
-                    <a href="{% url 'insertar_infraccion' %}">
-                        <i class="fas fa-plus"></i> <!-- Icono de agregar -->
-                        <span class="menu-text">Insertar Infracción</span>
-                    </a>
-                </div>
-            </li>
-            <li>
-                <a href="#">
+
+                <a href="#reportes">
                     <i class="fas fa-chart-bar"></i> <!-- Icono de reportes -->
                     <span class="menu-text">REPORTES</span>
                 </a>
@@ -73,30 +42,11 @@
     </div>
     <!-- Contenido principal del dashboard -->
     <div class="dashboard-content" id="dashboard-content">
-        <p>Bienvenido, {{ request.user.username }}</p>
-        <!-- Tu contenido específico aquí -->
+        <div id="actas" class="content-section">{% include 'templates_actas/lista_actas.html' %}</div>
+        <div id="conductores" class="content-section">{% include 'templates_drivers/listar_conductor.html' %}</div>
+        
     </div>
 </div>
 
-<script>
-    function toggleDropdown(id) {
-        var dropdown = document.getElementById(id);
-        dropdown.classList.toggle('show');
-    }
 
-    function toggleSidebar() {
-        var sidebar = document.getElementById('dashboard-sidebar');
-        var content = document.getElementById('dashboard-content');
-        var sidebar = document.querySelector('.sidebar');
-        sidebar.classList.toggle('sidebar-reduced');
-        sidebar.classList.toggle('collapsed');
-        content.classList.toggle('expanded');
-    }
-
-    // Añadir clase condicional al footer cuando el sidebar esté presente
-    document.addEventListener('DOMContentLoaded', function () {
-        var footer = document.querySelector('.footer');
-        footer.classList.add('with-sidebar');
-    });
-</script>
 {% endblock %}

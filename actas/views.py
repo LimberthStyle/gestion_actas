@@ -7,7 +7,7 @@ from django.db.models import Q
 from django.utils import timezone
 from datetime import datetime
 
-#base
+#BASE------------------------------------------
 def inicio(request):
     return render(request, 'login.html')
 
@@ -15,7 +15,7 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-# INICIAR SESION
+# INICIAR SESION----------------------------
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -39,10 +39,15 @@ def registro_usuario(request):
         form = RegistroForm()
     return render(request, 'templates_users/registro_usuario.html', {'form': form})
 
-# INTERFAZ DE INICIO
+# INTERFAZ DE INICIO----------------------------------------------
 @login_required
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    actas = Acta.objects.all()  # Obtén todas las actas
+    conductores = Conductor.objects.all()  # Obtén todos los conductores
+    return render(request, 'dashboard.html', {
+        'actas': actas,
+        'conductores': conductores,
+    })
 
 @login_required
 def registrar_acta(request):
@@ -137,7 +142,7 @@ def insertar_infraccion(request):
             })
 
     return render(request, 'templates_infraccion/insertar_infraccion.html')
-
+#-------------------CONDUCTORES--------------
 def registrar_conductor(request):
     if request.method == 'POST':
         dni = request.POST.get('dni')
@@ -150,7 +155,10 @@ def registrar_conductor(request):
         return redirect('dashboard')
 
     return render(request, 'templates_drivers/registrar_conductor.html')
-
+def listar_conductor(request):
+    conductores = Conductor.objects.all()
+    return render(request, 'templates_drivers/listar_conductor.html',{'conductores': conductores})
+#----------------Vehiculos--------------------------------------------------------
 def registrar_vehiculo(request):
     if request.method == 'POST':
         placa = request.POST.get('placa')

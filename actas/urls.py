@@ -6,6 +6,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('registro_usuario/', views.registro_usuario, name='registro_usuario'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    #---------------ACTAS-----------------------------------------------
     path('registrar_acta/', views.registrar_acta, name='registrar_acta'),
     path('lista_actas/', views.lista_actas, name='lista_actas'),
     path('apelar_acta/<int:acta_id>/', views.apelar_acta, name='apelar_acta'),
@@ -18,4 +19,5 @@ urlpatterns = [
     path('insertar_infraccion/', views.insertar_infraccion, name='insertar_infraccion'),
     path('logout/', views.logout_view, name='logout'),
     path('edit_user/', views.edit_user, name='edit_user'),
+    path('listar_conductor/', views.listar_conductor, name='listar_conductor')
 ]

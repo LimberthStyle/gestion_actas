@@ -59,7 +59,7 @@
 /* Estilos para el contenido desplegable */
 .dropdown-content {
     display: none; /* Oculta el contenido desplegable por defecto */
-    padding-left: 20px; /* Añade un padding izquierdo */
+ /* Añade un padding izquierdo */
 }
 
 .dropdown-content.show {
@@ -92,3 +92,13 @@
 .sidebar-reduced ul li a i {
     margin: 0 auto; /* Centrar iconos y toggle en el sidebar reducido */
 }
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+

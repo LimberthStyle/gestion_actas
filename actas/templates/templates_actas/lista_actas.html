@@ -1,40 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Lista de Actas</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .search-box {
-            margin-bottom: 20px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Lista de Actas</h1>
-    <div class="search-box">
-        <form method="get">
-            <input type="text" name="q" placeholder="Buscar por nombre, DNI o código" value="{{ request.GET.q }}">
-            <button type="submit">Buscar</button>
-        </form>
-    </div>
-    <table>
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Lista de Actas</h1>
+<div class="search-box">
+    <form method="get">
+        <input type="text" name="q" placeholder="Buscar por nombre, DNI o código" value="{{ request.GET.q }}">
+        <button type="submit">Buscar</button>
+    </form>
+</div>
+<table class="table table-bordered table-hover">
+    <thead class="thead-dark">
         <tr>
             <th>Nº Acta</th>
             <th>DNI</th>
@@ -46,25 +21,26 @@
             <th>Retención</th>
             <th>Estado</th>
             <th>Acciones</th>
+
         </tr>
-        {% for acta in actas %}
-        <tr>
-            <td>{{ acta.id }}</td> <!-- Usando el campo 'id' como número de acta -->
-            <td>{{ acta.id_infrac.id_driver.dni }}</td>
-            <td>{{ acta.id_infrac.id_driver.nombres }} {{ acta.id_infrac.id_driver.apellidos }}</td>
-            <td>{{ acta.fecha_reg }}</td>
-            <td>{{ acta.propietario }}</td>
-            <td>{{ acta.id_infrac.id_vehiculo.placa }}</td>
-            <td>{{ acta.id_infrac.fecha_infrac }}</td>
-            <td>{{ acta.id_infrac.retencion }}</td>
-            <td>{{ acta.estado }}</td>
-            <td>
-                <a href="{% url 'editar_acta' acta.id %}">Editar</a>
-                <a href="{% url 'eliminar_acta' acta.id %}">Eliminar</a>
-                <a href="{% url 'apelar_acta' acta.id %}">Apelar</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-</body>
-</html>
+    </thead>
+    {% for acta in actas %}
+    <tr>
+        <td>{{ acta.id }}</td> <!-- Usando el campo 'id' como número de acta -->
+        <td>{{ acta.id_infrac.id_driver.dni }}</td>
+        <td>{{ acta.id_infrac.id_driver.nombres }} {{ acta.id_infrac.id_driver.apellidos }}</td>
+        <td>{{ acta.fecha_reg }}</td>
+        <td>{{ acta.propietario }}</td>
+        <td>{{ acta.id_infrac.id_vehiculo.placa }}</td>
+        <td>{{ acta.id_infrac.fecha_infrac }}</td>
+        <td>{{ acta.id_infrac.retencion }}</td>
+        <td>{{ acta.estado }}</td>
+        <td>
+            <a href="{% url 'editar_acta' acta.id %}">Editar</a>
+            <a href="{% url 'eliminar_acta' acta.id %}">Eliminar</a>
+            <a href="{% url 'apelar_acta' acta.id %}">Apelar</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
