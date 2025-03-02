@@ -2,21 +2,47 @@
 
 {% block content %}
 <div class="container mt-5">
-    <button type="button" class="btn btn-secondary" onclick="window.history.back();">Atrás</button>   
-    <h1>Registrar Nuevo Vehículo</h1>
+      
+    <h1 class="text-center">Registrar Nuevo Vehículo</h1>
+
     {% if messages %}
         {% for message in messages %}
-            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
                 {{ message }}
             </div>
         {% endfor %}
     {% endif %}
-    <form class="vcl" method="POST">
-        {% csrf_token %}
-        <label for="placa">Placa:</label>
-        <input type="text" id="placa" name="placa" required>
 
-        <button type="submit">Registrar Vehículo</button>
-    </form>
+    <div class="card shadow p-4 mt-4">
+        <form method="POST" id="vehiculoForm">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="placa" class="form-label">Placa Vehicular:</label>
+                <input type="text" id="placa" name="placa" class="form-control" placeholder="Ej: A23-456" required>
+                <div class="text-danger mt-2" id="errorPlaca" style="display: none;">
+                    ⚠ La placa debe tener el formato correcto: <b>Una letra inicial + letras/números + "-" + 3 números</b> (Ej: A23-456)
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3">
+                <button type="submit" class="btn btn-primary">Registrar Vehículo</button>
+                <button type="button" class="btn btn-secondary mb-3" onclick="window.history.back();">Atrás</button> 
+            </div>
+        </form>
+    </div>
 </div>
+
+<script>
+document.getElementById("vehiculoForm").addEventListener("submit", function(event) {
+    var placa = document.getElementById("placa").value;
+    var regex = /^[A-Z][A-Z0-9]*-\d{3}$/;  // 1ra letra + letras/números + "-" + 3 números
+
+    if (!regex.test(placa)) {
+        document.getElementById("errorPlaca").style.display = "block";
+        event.preventDefault(); // Detiene el envío del formulario
+    } else {
+        document.getElementById("errorPlaca").style.display = "none";
+    }
+});
+</script>
 {% endblock %}

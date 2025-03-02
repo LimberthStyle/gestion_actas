@@ -1,9 +1,10 @@
 import json
+import re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from .models import Acta, Conductor, Infraccion, Vehiculo
-from .forms import InfraccionForm, LoginForm, ActaForm, ApelarActaForm, RegistroForm, EditUserForm, EditUserPasswordForm
+from .forms import ConductorForm, InfraccionForm, LoginForm, ActaForm, ApelarActaForm, RegistroForm, EditUserForm, EditUserPasswordForm
 from django.db.models import Q
 from django.utils import timezone
 from datetime import datetime
@@ -203,30 +204,68 @@ def registrar_conductor(request):
 def listar_conductor(request):
     conductores = Conductor.objects.all()
     return render(request, 'templates_drivers/listar_conductor.html',{'conductores': conductores})
+
+def editar_conductor(request, conductor_id):
+    conductor = get_object_or_404(Conductor, id=conductor_id)
+    if request.method == 'POST':
+        form = ConductorForm(request.POST, instance=conductor)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_conductores')  # Redirigir a la lista de conductores
+    else:
+        form = ConductorForm(instance=conductor)
+    
+    return render(request, 'templates_drivers/editar_conductor.html', {'form': form, 'conductor': conductor})
+
+def eliminar_conductor(request, conductor_id):
+    conductor = get_object_or_404(Conductor, id=conductor_id)
+    if request.method == 'POST':
+        conductor.delete()
+        return redirect('listar_conductores')  # Redirigir a la lista de conductores
+    
+    return render(request, 'templates_drivers/eliminar_conductor.html', {'conductor': conductor})
 #----------------Vehiculos--------------------------------------------------------
 @login_required
 def registrar_vehiculo(request):
-    if request.method == 'POST':
-        placa = request.POST.get('placa')
-        print(f"Placa recibida: {placa}")  # Depuración
-        if placa:
-            try:
-                nuevo_vehiculo = Vehiculo(placa=placa)
-                nuevo_vehiculo.save()
-                messages.success(request, 'Vehículo registrado correctamente.')
-                return redirect('dashboard')
-            except Exception as e:
-                messages.error(request, f'Error al registrar el vehículo: {e}')
-                print(f"Error: {e}")  # Depuración
-        else:
-            messages.error(request, 'La placa es requerida.')
-            print("La placa es requerida.")  # Depuración
-    
-    return render(request, 'templates_vehiculo/registrar_vehiculo.html')
+    if request.method == "POST":
+        placa = request.POST.get("placa").upper()
+        regex = r"^[A-Z][A-Z0-9]*-\d{3}$"  # 1ra letra + letras/números + "-" + 3 números
+
+        if not re.match(regex, placa):
+            messages.error(request, "⚠ La placa debe tener el formato correcto (Ej: A23-456)")
+            return redirect("registrar_vehiculo")
+
+        if Vehiculo.objects.filter(placa=placa).exists():
+            messages.error(request, "⚠ La placa ya está registrada")
+            return redirect("registrar_vehiculo")
+
+        Vehiculo.objects.create(placa=placa)
+        messages.success(request, "✅ Vehículo registrado exitosamente")
+        return redirect("listar_vehiculo")
+
+    return render(request, "templates_vehiculo/registrar_vehiculo.html")
+
 def listar_vehiculo(request):
     vehiculos = Vehiculo.objects.all()
     return render(request, 'templates_vehiculo/listar_vehiculo.html', {'vehiculos': vehiculos})
-#vista para editar usuario
+
+def editar_vehiculo(request, id):
+    vehiculo = get_object_or_404(Vehiculo, id=id)
+
+    if request.method == "POST":
+        vehiculo.placa = request.POST.get("placa")
+        vehiculo.save()
+        return redirect("lista_vehiculos")
+
+    return render(request, "templates_vehiculo/editar_vehiculo.html", {"vehiculo": vehiculo})
+
+def eliminar_vehiculo(request, id):
+    vehiculo = get_object_or_404(Vehiculo, id=id)
+    if request.method == "POST":
+        vehiculo.delete()
+        return redirect('listar_vehiculo')
+    return render(request, 'templates_vehiculo/eliminar_vehiculo.html', {'vehiculo': vehiculo})
+#---------------------------vista para editar usuario--------------------------------------------
 @login_required
 def edit_user(request):
     if request.method == 'POST':

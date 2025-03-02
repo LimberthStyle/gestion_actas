@@ -47,3 +47,20 @@ class InfraccionForm(forms.ModelForm):
             'id_driver': forms.Select(attrs={'class': 'form-control'}),
             'id_vehiculo': forms.Select(attrs={'class': 'form-control'}),
         }
+#----------------------conductor------------------------------------------------------
+class ConductorForm(forms.ModelForm):
+    class Meta:
+        model = Conductor
+        fields = ['dni', 'nombres', 'apellidos', 'cat_licen']
+        widgets = {
+            'dni': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese DNI'}),
+            'nombres': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese nombres'}),
+            'apellidos': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese apellidos'}),
+            'cat_licen': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese categoría de licencia'}),
+        }
+
+    def clean_dni(self):
+        dni = self.cleaned_data.get('dni')
+        if not dni.isdigit() or len(dni) != 8:
+            raise forms.ValidationError("El DNI debe tener exactamente 8 dígitos numéricos.")
+        return dni
