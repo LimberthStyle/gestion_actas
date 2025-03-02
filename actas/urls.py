@@ -16,8 +16,16 @@ urlpatterns = [
     path('registro/', views.registro_usuario, name='registro_usuario'),
     path('registrar_conductor/', views.registrar_conductor, name='registrar_conductor'),
     path('registrar_vehiculo/', views.registrar_vehiculo, name='registrar_vehiculo'),
-    path('insertar_infraccion/', views.insertar_infraccion, name='insertar_infraccion'),
+    
     path('logout/', views.logout_view, name='logout'),
     path('edit_user/', views.edit_user, name='edit_user'),
-    path('listar_conductor/', views.listar_conductor, name='listar_conductor')
+    path('listar_conductor/', views.listar_conductor, name='listar_conductor'),
+    path('listar_vehiculo/', views.listar_vehiculo, name='listar_vehiculo'),
+    path('dashboard_view/', views.dashboard_view, name='dashboard_view'),
+    #-------------------------------INFRACCIONES-------------------------------------
+    path('listar_infraccion/', views.listar_infraccion, name='listar_infraccion'),
+    path('insertar_infraccion/', views.insertar_infraccion, name='insertar_infraccion'),
+    path('editar_infraccion/<int:id>/', views.editar_infraccion, name='editar_infraccion'),
+    path('eliminar_infraccion/<int:id>/', views.eliminar_infraccion, name='eliminar_infraccion'),
+    
 ]

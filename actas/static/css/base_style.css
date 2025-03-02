@@ -2,12 +2,10 @@
 
 /* Estilos generales */
 body {
-    padding-top: 56px; /* Ajuste para el navbar fijo */
+    display: flex;
     margin: 0;
-    background-color: #C0C0C0; /* Color plateado para el fondo */
-    height: 100vh;
-    color: white;
-    font-family: Arial, sans-serif; /* Fuente predeterminada */
+    overflow-x: hidden; /* Evita el desbordamiento horizontal */
+    
 }
 
 /* Estilos para el navbar */
@@ -36,7 +34,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap; /* Evita que el texto se divida en varias líneas */
-    color: white; /* Color del texto */
+    color: #ff7f50; /* Color del texto */
 }
 
 .navbar-subtext {
@@ -62,7 +60,7 @@ body {
     width: 100%; /* Ocupa todo el ancho de la pantalla */
     height: 60px; /* Altura del footer */
     line-height: 60px; /* Centra el texto verticalmente */
-    background-color: #343a40; /* Color de fondo */
+    background-color: transparent; /* Color de fondo */
     text-align: center; /* Centra el texto horizontalmente */
     z-index: 998; /* Por debajo del sidebar */
     margin: 0; /* Elimina márgenes predeterminados */
@@ -80,11 +78,41 @@ body {
 }
 
 /* Estilos para el contenedor principal */
+/* Estilos para el contenedor principal */
 .contenedor-principal {
-    background: inherit;
-    height: 100%;
-    width: 100%;
-    padding-top: 20px; /* Añade un padding superior */
+    flex-grow: 1; /* Hace que el contenedor principal ocupe el espacio restante */
+    padding-top: 80px; /* Añade un padding superior para separar del navbar */
+    padding-bottom: 60px; /* Añade un padding inferior para separar del footer */
+    transition: margin-left 0.3s;
+    background-color: #f8f9fa; /* Color de fondo para el contenedor principal */
+}
+
+/* Estilos para el contenedor interno */
+.container-fluid {
+    padding: 20px; /* Añade un padding interno */
+    max-width: 1200px; /* Limita el ancho máximo del contenedor */
+    margin: 0 auto; /* Centra el contenedor horizontalmente */
+}
+
+/* Estilos para el contenido dentro del contenedor principal */
+.contenedor-principal .content-section {
+    background-color: #ffffff; /* Color de fondo para las secciones de contenido */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    padding: 20px; /* Añade un padding interno */
+    margin-bottom: 20px; /* Añade un margen inferior para separar las secciones */
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .contenedor-principal {
+        padding-top: 60px; /* Reduce el padding superior en pantallas pequeñas */
+        padding-bottom: 40px; /* Reduce el padding inferior en pantallas pequeñas */
+    }
+
+    .container-fluid {
+        padding: 10px; /* Reduce el padding interno en pantallas pequeñas */
+    }
 }
 
 /* Estilos para el texto de la marca */
@@ -107,4 +135,49 @@ body {
 
 .nav-link:hover {
     color: white; /* Cambia el color al pasar el mouse */
+}
+.search-box {
+    margin-bottom: 20px;
+}
+
+.search-box input {
+    padding: 8px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.search-box button {
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #343a40;
+    color: white;
+}
+
+.table tr:hover {
+    background-color: #f1f1f1;
+}
+.btn{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px; /* Ajusta el margen inferior según sea necesario */
 }

@@ -35,3 +35,15 @@ class EditUserPasswordForm(PasswordChangeForm):
     class Meta:
         model = User
         fields = ['old_password', 'new_password1', 'new_password2']
+#------------infraccion------------------------------------------
+
+class InfraccionForm(forms.ModelForm):
+    class Meta:
+        model = Infraccion
+        fields = ['fecha_infrac', 'retencion', 'id_driver', 'id_vehiculo']
+        widgets = {
+            'fecha_infrac': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'retencion': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'id_driver': forms.Select(attrs={'class': 'form-control'}),
+            'id_vehiculo': forms.Select(attrs={'class': 'form-control'}),
+        }

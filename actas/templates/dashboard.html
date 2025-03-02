@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block content %}
-
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 <div class="dashboard-container">
     <!-- Sidebar (solo en dashboard) -->
     <div class="sidebar mb-2 bg-dark" id="dashboard-sidebar">
@@ -13,28 +13,38 @@
         </div>
         <ul class="contenedor-menu">
             <li>
-                <a href="#actas" onclick="toggleDropdown('actas')">
-                    <i class="fas fa-file-alt"></i> <!-- Icono de actas -->
+                <a href="#dashboard">
+                    <i class="fas fa-tachometer-alt"></i> <!-- Icono de dashboard -->
+                    <span class="menu-text">DASHBOARD</span>
+                </a>
+            </li>
+            <li>
+                <a href="#actas">
+                    <i class="fas fa-file-alt"></i>
                     <span class="menu-text">ACTAS</span>
                 </a>
-
-                <a href="#conductores" onclick="toggleDropdown('conductores')">
-                    <i class="fas fa-user"></i> <!-- Icono de conductores -->
+            </li>
+            <li>
+                <a href="#conductores">
+                    <i class="fas fa-user"></i>
                     <span class="menu-text">CONDUCTORES</span>
                 </a>
-
-                <a href="#vehiculos" onclick="toggleDropdown('vehiculos')">
-                    <i class="fas fa-car"></i> <!-- Icono de vehículos -->
+            </li>
+            <li>
+                <a href="#vehiculos">
+                    <i class="fas fa-car"></i>
                     <span class="menu-text">VEHÍCULOS</span>
                 </a>
-
-                <a href="#infracciones" onclick="toggleDropdown('infracciones')">
-                    <i class="fas fa-exclamation-triangle"></i> <!-- Icono de infracciones -->
+            </li>
+            <li>
+                <a href="#infracciones">
+                    <i class="fas fa-exclamation-triangle"></i>
                     <span class="menu-text">INFRACCIONES</span>
                 </a>
-
+            </li>
+            <li>
                 <a href="#reportes">
-                    <i class="fas fa-chart-bar"></i> <!-- Icono de reportes -->
+                    <i class="fas fa-chart-bar"></i>
                     <span class="menu-text">REPORTES</span>
                 </a>
             </li>
@@ -42,9 +52,42 @@
     </div>
     <!-- Contenido principal del dashboard -->
     <div class="dashboard-content" id="dashboard-content">
+        <div id="dashboard" class="content-section active">
+            <div class="container mt-5">
+                <h1 class="text-center">ESTADISTICAS SEMANALES</h1>
+                <div class="row justify-content-center">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-dark text-bg-info mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Total de Actas Registradas</h5>
+                                <p class="card-text display-4">{{ total_actas_registradas }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-dark text-bg-warning mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Total de Actas Apeladas</h5>
+                                <p class="card-text display-4">{{ total_actas_apeladas }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-dark text-bg-danger mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Porcentaje de Infracciones</h5>
+                                <p class="card-text display-4">{{ porcentaje_infracciones }}%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="actas" class="content-section">{% include 'templates_actas/lista_actas.html' %}</div>
         <div id="conductores" class="content-section">{% include 'templates_drivers/listar_conductor.html' %}</div>
-        
+        <div id="vehiculos" class="content-section">{% include 'templates_vehiculo/listar_vehiculo.html' %}</div>
+        <div id="infracciones" class="content-section">{% include 'templates_infraccion/listar_infraccion.html' %}</div>
+        <div id="reportes" class="content-section">{% include 'reportes.html' %}</div>
     </div>
 </div>
 

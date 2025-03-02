@@ -1,4 +1,3 @@
-
 function toggleDropdown(id) {
     var dropdown = document.getElementById(id);
     dropdown.classList.toggle('show');
@@ -7,6 +6,7 @@ function toggleDropdown(id) {
 function toggleSidebar() {
     var sidebar = document.getElementById('dashboard-sidebar');
     var content = document.getElementById('dashboard-content');
+    var content = document.querySelector('.contenedor-principal');
     sidebar.classList.toggle('sidebar-reduced');
     sidebar.classList.toggle('collapsed');
     content.classList.toggle('expanded');
@@ -25,8 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Manejar clics en los enlaces del sidebar
     document.querySelectorAll('.contenedor-menu a').forEach(link => {
         link.addEventListener('click', function (e) {
-            // Evitar que el evento se propague y cierre el menú desplegable
-            e.stopPropagation();
+            e.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
 
             const targetId = this.getAttribute('href').substring(1);
             document.querySelectorAll('.content-section').forEach(section => {
@@ -47,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // Añadir clase condicional al footer cuando el sidebar esté presente
 document.addEventListener('DOMContentLoaded', function () {
     var footer = document.querySelector('.footer');
-    footer.classList.add('with-sidebar');
+    if (footer) {
+        footer.classList.add('with-sidebar');
+    }
 });
-

@@ -1,5 +1,12 @@
 /* Archivo: dashboard.css */
 
+/* Estilos generales */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
 /* Estilos para el sidebar */
 .sidebar {
     position: fixed;
@@ -18,6 +25,10 @@
     width: 60px; /* Ancho colapsado */
 }
 
+.sidebar.collapsed + .contenedor-principal {
+    margin-left: 60px;
+}
+
 .sidebar ul {
     list-style-type: none; /* Elimina los puntos de la lista */
     padding: 0;
@@ -34,6 +45,7 @@
     display: flex; /* Usa flexbox para alinear icono y texto */
     align-items: center; /* Centra verticalmente */
     padding: 10px; /* Añade un padding interno */
+    transition: background-color 0.3s ease;
 }
 
 .sidebar ul li a:hover {
@@ -59,12 +71,13 @@
 /* Estilos para el contenido desplegable */
 .dropdown-content {
     display: none; /* Oculta el contenido desplegable por defecto */
- /* Añade un padding izquierdo */
+    padding-left: 20px; /* Añade un padding izquierdo */
 }
 
 .dropdown-content.show {
     display: block; /* Muestra el contenido desplegable */
 }
+
 .sidebar-header {
     display: flex;
     align-items: center;
@@ -78,7 +91,9 @@
     cursor: pointer;
     padding: 8px;
     border: none; /* Sin borde */
+    background-color: transparent;
 }
+
 .sidebar-text {
     color: white;
     transition: opacity 0.3s ease;
@@ -88,17 +103,151 @@
 .sidebar-reduced .sidebar-text {
     opacity: 0; /* Esconde el texto cuando el sidebar está reducido */
 }
+
 .sidebar-reduced .sidebar-toggle,
 .sidebar-reduced ul li a i {
     margin: 0 auto; /* Centrar iconos y toggle en el sidebar reducido */
 }
 
+/* Estilos para las secciones de contenido */
 .content-section {
     display: none;
+    margin-left: 250px; /* Ajusta el margen izquierdo para el sidebar */
+    padding: 20px;
+    transition: margin-left 0.3s ease;
 }
 
 .content-section.active {
     display: block;
 }
 
+/* Ajustar el margen izquierdo cuando el sidebar está colapsado */
+.sidebar.collapsed + .dashboard-content .content-section {
+    margin-left: 60px;
+}
 
+/* Estilos para el footer */
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    z-index: 998; /* Por debajo del sidebar */
+}
+
+.footer.with-sidebar {
+    width: calc(100% - 250px); /* Ajusta el ancho cuando el sidebar está presente */
+    margin-left: 250px;
+    transition: width 0.3s ease, margin-left 0.3s ease;
+}
+
+.sidebar.collapsed + .dashboard-content + .footer.with-sidebar {
+    width: calc(100% - 60px); /* Ajusta el ancho cuando el sidebar está colapsado */
+    margin-left: 60px;
+}
+
+/* Estilos para el dashboard (estadísticas y reportes) */
+.dashboard-stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* Espacio entre las tarjetas */
+    margin-top: 50px; /* Mover el contenido más abajo */
+    flex-wrap: wrap; /* Asegura que las tarjetas se ajusten en pantallas pequeñas */
+}
+
+.stat-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    width: 200px; /* Ancho de las tarjetas */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px); /* Efecto de levantar la tarjeta */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #333333;
+}
+
+.stat-card p {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #007bff; /* Color azul para los números */
+}
+
+/* Estilos para el dashboard */
+#dashboard {
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px; /* Limita el ancho del contenedor */
+    margin: 0 auto; /* Centrar el contenedor */
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centrar las tarjetas horizontalmente */
+    gap: 20px; /* Espacio entre las tarjetas */
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 300px; /* Ancho fijo para las tarjetas */
+    height: 150px; /* Altura fija para hacerlas rectangulares */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.card-title {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #333333;
+}
+
+.card-text {
+    font-size: 2.5em; /* Aumenta el tamaño del número */
+    font-weight: bold;
+    color: white; /* Color azul para los números */
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .card {
+        width: calc(50% - 20px); /* Dos tarjetas por fila en pantallas medianas */
+        height: 150px; /* Mantener la altura */
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        width: 100%; /* Una tarjeta por fila en pantallas pequeñas */
+        height: 150px; /* Mantener la altura */
+    }
+}

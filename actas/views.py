@@ -1,11 +1,15 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from .models import Acta, Conductor, Infraccion, Vehiculo
-from .forms import LoginForm, ActaForm, ApelarActaForm, RegistroForm, EditUserForm, EditUserPasswordForm
+from .forms import InfraccionForm, LoginForm, ActaForm, ApelarActaForm, RegistroForm, EditUserForm, EditUserPasswordForm
 from django.db.models import Q
 from django.utils import timezone
 from datetime import datetime
+from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 #BASE------------------------------------------
 def inicio(request):
@@ -42,11 +46,36 @@ def registro_usuario(request):
 # INTERFAZ DE INICIO----------------------------------------------
 @login_required
 def dashboard(request):
+    # Calcular el total de actas registradas esta semana
+    total_actas_registradas = Acta.objects.filter(fecha_reg__week=timezone.now().isocalendar()[1]).count()
+    
+    # Calcular el total de actas apeladas esta semana
+    total_actas_apeladas = Acta.objects.filter(
+        fecha_reg__week=timezone.now().isocalendar()[1],
+        apelacion__isnull=False  # Filtra actas que tienen una apelación relacionada
+    ).count()
+    
+    # Calcular el porcentaje de infracciones esta semana
+    total_infracciones = Infraccion.objects.filter(fecha_infrac__week=timezone.now().isocalendar()[1]).count()
+    total_actas = Acta.objects.filter(fecha_reg__week=timezone.now().isocalendar()[1]).count()
+    porcentaje_infracciones = (total_infracciones / total_actas) * 100 if total_actas > 0 else 0
+    
+    # SECCIONES DEL SIDEBAR
     actas = Acta.objects.all()  # Obtén todas las actas
     conductores = Conductor.objects.all()  # Obtén todos los conductores
+    vehiculos = Vehiculo.objects.all()
+    infractions = Infraccion.objects.all()
+    
     return render(request, 'dashboard.html', {
+        # MUESTRA ESTADISTICAS
+        'total_actas_registradas': total_actas_registradas,
+        'total_actas_apeladas': total_actas_apeladas,
+        'porcentaje_infracciones': round(porcentaje_infracciones, 2),
+        # SECCIONES DEL SIDEBAR
         'actas': actas,
         'conductores': conductores,
+        'vehiculos': vehiculos,
+        'infractions': infractions,
     })
 
 @login_required
@@ -57,7 +86,7 @@ def registrar_acta(request):
             acta = form.save(commit=False)
             acta.usuario = request.user
             acta.save()
-            return redirect('lista_actas')
+            return redirect('dashboard')
     else:
         form = ActaForm()
     return render(request, 'templates_actas/registrar_acta.html', {'form': form})
@@ -106,43 +135,58 @@ def eliminar_acta(request, acta_id):
     acta = get_object_or_404(Acta, id=acta_id)
     acta.delete()
     return redirect('lista_actas')
+#--------------------------INFRACCIONES--------------------------------------
+def listar_infraccion(request):
+    infractions = Infraccion.objects.all()
+    return render(request, 'templates_infraccion/listar_infraccion.html', {'infractions': infractions})
 
+@login_required
 def insertar_infraccion(request):
-    if request.method == 'POST':
-        fecha_infrac = request.POST.get('fecha_infrac')
-        try:
-            fecha_infrac = datetime.strptime(fecha_infrac, '%Y-%m-%dT%H:%M')
-        except ValueError:
-            return render(request, 'insertar_infraccion.html', {
-                'error': 'Formato de fecha incorrecto. Use el selector de fecha y hora.'
-            })
-            
-        retencion = request.POST.get('retencion')
-        id_driver_id = request.POST.get('id_driver_id')
-        id_vehiculo_id = request.POST.get('id_vehiculo_id')
+    if request.method == "POST":
+        fecha = request.POST.get("fecha_infrac")
+        retencion = request.POST.get("retencion")
+        conductor_id = request.POST.get("id_driver_id")
+        vehiculo_id = request.POST.get("id_vehiculo_id")
 
         try:
-            conductor = Conductor.objects.get(id=id_driver_id)
-            vehiculo = Vehiculo.objects.get(id=id_vehiculo_id)
-            nueva_infraccion = Infraccion(
-                fecha_infrac=fecha_infrac,
+            conductor = Conductor.objects.get(id=conductor_id)
+            vehiculo = Vehiculo.objects.get(id=vehiculo_id)
+
+            Infraccion.objects.create(
+                fecha_infrac=fecha,
                 retencion=retencion,
-                id_driver=conductor,
-                id_vehiculo=vehiculo
+                conductor=conductor,
+                vehiculo=vehiculo
             )
-            nueva_infraccion.save()
-            return redirect('dashboard')
-        except Conductor.DoesNotExist:
-            return render(request, 'insertar_infraccion.html', {
-                'error': 'El ID del conductor no existe.'
-            })
-        except Vehiculo.DoesNotExist:
-            return render(request, 'insertar_infraccion.html', {
-                'error': 'El ID del vehículo no existe.'
-            })
+            return redirect("lista_infracciones")  # Redirige a la lista de infracciones
 
-    return render(request, 'templates_infraccion/insertar_infraccion.html')
+        except Conductor.DoesNotExist or Vehiculo.DoesNotExist:
+            return render(request, "insertar_infraccion.html", {"error": "Conductor o vehículo no encontrado"})
+
+    conductores = Conductor.objects.all()  # Obtener lista de conductores
+    vehiculos = Vehiculo.objects.all()  # Obtener lista de vehículos
+
+    return render(request, "templates_infraccion/insertar_infraccion.html", {"conductores": conductores, "vehiculos": vehiculos})
+
+def editar_infraccion(request, id):
+    infraccion = get_object_or_404(Infraccion, id=id)
+    if request.method == "POST":
+        form = InfraccionForm(request.POST, instance=infraccion)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_infracciones')
+    else:
+        form = InfraccionForm(instance=infraccion)
+    return render(request, 'templates_infraccion/editar_infraccion.html', {'form': form})
+
+def eliminar_infraccion(request, id):
+    infraccion = get_object_or_404(Infraccion, id=id)
+    if request.method == "POST":
+        infraccion.delete()
+        return redirect('listar_infracciones')
+    return render(request, 'templates_infraccion/eliminar_infraccion.html', {'infraccion': infraccion})
 #-------------------CONDUCTORES--------------
+@login_required
 def registrar_conductor(request):
     if request.method == 'POST':
         dni = request.POST.get('dni')
@@ -155,20 +199,33 @@ def registrar_conductor(request):
         return redirect('dashboard')
 
     return render(request, 'templates_drivers/registrar_conductor.html')
+@login_required
 def listar_conductor(request):
     conductores = Conductor.objects.all()
     return render(request, 'templates_drivers/listar_conductor.html',{'conductores': conductores})
 #----------------Vehiculos--------------------------------------------------------
+@login_required
 def registrar_vehiculo(request):
     if request.method == 'POST':
         placa = request.POST.get('placa')
-
-        nuevo_vehiculo = Vehiculo(placa=placa)
-        nuevo_vehiculo.save()
-        return redirect('dashboard')
-
+        print(f"Placa recibida: {placa}")  # Depuración
+        if placa:
+            try:
+                nuevo_vehiculo = Vehiculo(placa=placa)
+                nuevo_vehiculo.save()
+                messages.success(request, 'Vehículo registrado correctamente.')
+                return redirect('dashboard')
+            except Exception as e:
+                messages.error(request, f'Error al registrar el vehículo: {e}')
+                print(f"Error: {e}")  # Depuración
+        else:
+            messages.error(request, 'La placa es requerida.')
+            print("La placa es requerida.")  # Depuración
+    
     return render(request, 'templates_vehiculo/registrar_vehiculo.html')
-
+def listar_vehiculo(request):
+    vehiculos = Vehiculo.objects.all()
+    return render(request, 'templates_vehiculo/listar_vehiculo.html', {'vehiculos': vehiculos})
 #vista para editar usuario
 @login_required
 def edit_user(request):
@@ -188,3 +245,26 @@ def edit_user(request):
         'user_form': user_form,
         'password_form': password_form
     })
+#--------------------------------ESTADISTICAS Y REPORTES------------------------
+
+def dashboard_view(request):
+  # Calcular el total de actas registradas esta semana
+    total_actas_registradas = Acta.objects.filter(fecha_reg__week=timezone.now().isocalendar()[1]).count()
+    
+    # Calcular el total de actas apeladas esta semana
+    total_actas_apeladas = Acta.objects.filter(
+        fecha_reg__week=timezone.now().isocalendar()[1],
+        apelacion__isnull=False  # Filtra actas que tienen una apelación relacionada
+    ).count()
+    
+    # Calcular el porcentaje de infracciones esta semana
+    total_infracciones = Infraccion.objects.filter(fecha_infrac__week=timezone.now().isocalendar()[1]).count()
+    total_actas = Acta.objects.filter(fecha_reg__week=timezone.now().isocalendar()[1]).count()
+    porcentaje_infracciones = (total_infracciones / total_actas) * 100 if total_actas > 0 else 0
+
+    context = {
+        'total_actas_registradas': total_actas_registradas,
+        'total_actas_apeladas': total_actas_apeladas,
+        'porcentaje_infracciones': round(porcentaje_infracciones, 2),
+    }
+    return render(request, 'dashboard.html', context)

@@ -1,80 +1,61 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Insertar Infracción</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        label {
-            margin-top: 10px;
-            display: block;
-            color: #555;
-        }
-        input[type="text"],
-        input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0 20px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Insertar Nueva Infracción</h1>
-        <form method="post">
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Insertar Nueva Infracción</h1>
+
+    <div class="card shadow-lg p-4">
+        <form method="post" action="{% url 'insertar_infraccion' %}">
             {% csrf_token %}
-            <label for="fecha_infrac">Fecha de la infracción:</label>
-            <input type="datetime-local" id="fecha_infrac" name="fecha_infrac" required>
 
-            <label for="retencion">Retención:</label>
-            <select id="retencion" name="retencion">
-                <option value="Revision tecniva">Revisión técnica</option>
-                <option value="SOAT">SOAT</option>
-                <option value="Cinturon de seguridad">Cinturón de seguridad</option>
-                <option value="Otras faltas">Otras faltas</option>
-            </select>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="fecha_infrac" class="form-label">Fecha de la infracción:</label>
+                    <input type="datetime-local" id="fecha_infrac" name="fecha_infrac" class="form-control" required>
+                </div>
 
-            <label for="id_driver_id">ID del Conductor:</label>
-            <input type="number" id="id_driver_id" name="id_driver_id" required>
+                <div class="col-md-6">
+                    <label for="retencion" class="form-label">Retención:</label>
+                    <select id="retencion" name="retencion" class="form-select">
+                        <option value="Revision tecnica">Revisión técnica</option>
+                        <option value="SOAT">SOAT</option>
+                        <option value="Cinturon de seguridad">Cinturón de seguridad</option>
+                        <option value="Otras faltas">Otras faltas</option>
+                    </select>
+                </div>
+            </div>
 
-            <label for="id_vehiculo_id">ID del Vehículo:</label>
-            <input type="number" id="id_vehiculo_id" name="id_vehiculo_id" required>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="id_driver_id" class="form-label">Conductor:</label>
+                    <select id="id_driver_id" name="id_driver_id" class="form-select" required>
+                        <option value="">Seleccione un conductor</option>
+                        {% for conductor in conductores %}
+                        <option value="{{ conductor.id }}">{{ conductor.nombres }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-            <button type="submit">Insertar Infracción</button>
+                <div class="col-md-6">
+                    <label for="id_vehiculo_id" class="form-label">Vehículo:</label>
+                    <select id="id_vehiculo_id" name="id_vehiculo_id" class="form-select" required>
+                        <option value="">Seleccione un vehículo</option>
+                        {% for vehiculo in vehiculos %}
+                        <option value="{{ vehiculo.id }}">{{ vehiculo.placa }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3">
+                <button type="submit" class="btn btn-primary">Insertar Infracción</button>
+                <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancelar</button>
+            </div>
         </form>
+
         {% if error %}
-        <p style="color: red;">{{ error }}</p>
+        <p class="text-danger text-center mt-3">{{ error }}</p>
         {% endif %}
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

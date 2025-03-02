@@ -1,18 +1,32 @@
 /* Archivo: login.css */
 
 body {
-    background: #C0C0C0;
+    background-color: #001233;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
 }
 
 .card {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.8); /* Fondo semi-transparente para mejorar la legibilidad */
     border: none;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 10px;
 }
 
 .card-header {
     background: #343a40;
     color: #ff7f50;
+    border-radius: 10px 10px 0 0;
 }
 
 .input-group-text {
@@ -42,24 +56,7 @@ a:hover {
     color: white;
 }
 
-.d.grid {
+.d-grid {
     color: white;
-}
-
-/* Estilos para centrar las imágenes */
-.imagen-container {
-    display: flex;
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente */
-    margin-top: 20px; /* Espacio entre el formulario y las imágenes */
-}
-
-.imagen {
-    display: flex;
-    gap: 20px; /* Espacio entre las imágenes */
-}
-
-.imagen img {
-    width: 100px; /* Ajusta el tamaño de las imágenes */
-    height: auto; /* Mantiene la proporción de las imágenes */
+    text-align: center;
 }

@@ -3,58 +3,50 @@
 {% block title %}Iniciar Sesión{% endblock %}
 
 {% block content %}
-<!-- Enlaza el archivo login.css -->
 <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header text-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
-                    class="bi bi-person-circle mb-2" viewBox="0 0 16 16">
-                    <path
-                        d="M13.468 12.37C12.718 11.226 11.197 10.5 8 10.5s-4.717.726-5.468 1.87A6.979 6.979 0 0 0 8 15a6.979 6.979 0 0 0 5.468-2.63z" />
-                    <path fill-rule="evenodd" d="M8 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
-                </svg>
-                <h3 class="card-title">Iniciar Sesión</h3>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mb-3 input-group">
-                        <span class="input-group-text">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-person" viewBox="0 0 16 16">
-                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                                <path d="M8 9a5 5 0 0 0-5 5v1a5 5 0 0 0 10 0v-1a5 5 0 0 0-5-5z" />
-                            </svg>
-                        </span>
-                        <input type="text" class="form-control" id="username" name="username"
-                            placeholder="Nombre de usuario" required>
-                    </div>
-                    <div class="mb-3 input-group">
-                        <span class="input-group-text">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-shield-lock-fill" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd"
-                                    d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.465 9.99a11.8 11.8 0 0 0 2.517 2.453c.386.273.744.482 1.048.625.28.132.581.24.829.24s.548-.108.829-.24a7 7 0 0 0 1.048-.625 11.8 11.8 0 0 0 2.517-2.453c1.678-2.195 3.061-5.513 2.465-9.99a1.54 1.54 0 0 0-1.044-1.263 63 63 0 0 0-2.887-.87C9.843.266 8.69 0 8 0m0 5a1.5 1.5 0 0 1 .5 2.915l.385 1.99a.5.5 0 0 1-.491.595h-.788a.5.5 0 0 1-.49-.595l.384-1.99A1.5 1.5 0 0 1 8 5" />
-                            </svg>
-                        </span>
-                        <input type="password" class="form-control" id="password" name="password"
-                            placeholder="Contraseña" required>
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-                    </div>
-                </form>
-                <div class="mt-3 text-center" id="letra">
-                    <p>¿No tienes una cuenta? <a href="{% url 'registro_usuario' %}">Regístrate aquí</a>.</p>
-                </div>
-            </div>
+<div class="container  d-flex justify-content-center align-items-center vh-100">
+    <div class="card">
+        <div class="card-header text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+                class="bi bi-person-circle mb-2" viewBox="0 0 16 16">
+                <path
+                    d="M13.468 12.37C12.718 11.226 11.197 10.5 8 10.5s-4.717.726-5.468 1.87A6.979 6.979 0 0 0 8 15a6.979 6.979 0 0 0 5.468-2.63z" />
+                <path fill-rule="evenodd" d="M8 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
+            </svg>
+            <h3 class="card-title">Iniciar Sesión</h3>
         </div>
-        <div class="imagen-container text-center">
-            <div class="imagen">
-                <img src="{% static 'images/SICACS.png' %}" alt="SICACS">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3 input-group">
+                    <span class="input-group-text">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-person" viewBox="0 0 16 16">
+                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                            <path d="M8 9a5 5 0 0 0-5 5v1a5 5 0 0 0 10 0v-1a5 5 0 0 0-5-5z" />
+                        </svg>
+                    </span>
+                    <input type="text" class="form-control" id="username" name="username"
+                        placeholder="Nombre de usuario" required>
+                </div>
+                <div class="mb-3 input-group">
+                    <span class="input-group-text">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-shield-lock-fill" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.465 9.99a11.8 11.8 0 0 0 2.517 2.453c.386.273.744.482 1.048.625.28.132.581.24.829.24s.548-.108.829-.24a7 7 0 0 0 1.048-.625 11.8 11.8 0 0 0 2.517-2.453c1.678-2.195 3.061-5.513 2.465-9.99a1.54 1.54 0 0 0-1.044-1.263 63 63 0 0 0-2.887-.87C9.843.266 8.69 0 8 0m0 5a1.5 1.5 0 0 1 .5 2.915l.385 1.99a.5.5 0 0 1-.491.595h-.788a.5.5 0 0 1-.49-.595l.384-1.99A1.5 1.5 0 0 1 8 5" />
+                        </svg>
+                    </span>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña"
+                        required>
+                </div>
+                <div class="d-grid gap-2 text-center">
+                    <button type="submit" class="btn btn-primary mx-auto">Iniciar Sesión</button>
+                </div>
+            </form>
+            <div class="mt-3 text-center">
+                <p>¿No tienes una cuenta? <a href="{% url 'registro_usuario' %}">Regístrate aquí</a>.</p>
             </div>
         </div>
     </div>

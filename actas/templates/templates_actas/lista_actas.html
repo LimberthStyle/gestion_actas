@@ -1,46 +1,56 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Lista de Actas</h1>
-<div class="search-box">
-    <form method="get">
-        <input type="text" name="q" placeholder="Buscar por nombre, DNI o código" value="{{ request.GET.q }}">
-        <button type="submit">Buscar</button>
+
+<!-- Encabezado -->
+<h2 class="text-center mb-4">ACTAS</h2>
+<!-- Barra de búsqueda y botón de Registrar en la misma línea -->
+<div class="d-flex align-items-center mb-4">
+    <!-- Formulario de búsqueda -->
+    <form method="get" class="d-flex flex-grow-1 me-3">
+        <input type="text" name="q" class="form-control" placeholder="Buscar por nombre, DNI o código"
+            value="{{ request.GET.q }}">
+        <button type="submit" class="btn btn-primary ms-2">Buscar</button>
     </form>
+
+    <!-- Botón de Registrar Acta -->
+    <a class="btn btn-success" href="{% url 'registrar_acta' %}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-file-earmark-plus-fill" viewBox="0 0 16 16">
+            <path
+                d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0" />
+        </svg>
+        Registrar Acta
+    </a>
 </div>
+
+<!-- Tabla de Actas -->
 <table class="table table-bordered table-hover">
     <thead class="thead-dark">
         <tr>
-            <th>Nº Acta</th>
             <th>DNI</th>
-            <th>Nombre del Conductor</th>
-            <th>Fecha de Registro</th>
-            <th>Propietario</th>
-            <th>Placa Vehicular</th>
-            <th>Fecha de Infracción</th>
-            <th>Retención</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-
+            <th>CONDUCTOR</th>
+            <th>RETENCIÓN</th>
+            <th>FECHA DE REGISTRO</th>
+            <th>ESTADO</th>
+            <th>ACCIONES</th>
         </tr>
     </thead>
-    {% for acta in actas %}
-    <tr>
-        <td>{{ acta.id }}</td> <!-- Usando el campo 'id' como número de acta -->
-        <td>{{ acta.id_infrac.id_driver.dni }}</td>
-        <td>{{ acta.id_infrac.id_driver.nombres }} {{ acta.id_infrac.id_driver.apellidos }}</td>
-        <td>{{ acta.fecha_reg }}</td>
-        <td>{{ acta.propietario }}</td>
-        <td>{{ acta.id_infrac.id_vehiculo.placa }}</td>
-        <td>{{ acta.id_infrac.fecha_infrac }}</td>
-        <td>{{ acta.id_infrac.retencion }}</td>
-        <td>{{ acta.estado }}</td>
-        <td>
-            <a href="{% url 'editar_acta' acta.id %}">Editar</a>
-            <a href="{% url 'eliminar_acta' acta.id %}">Eliminar</a>
-            <a href="{% url 'apelar_acta' acta.id %}">Apelar</a>
-        </td>
-    </tr>
-    {% endfor %}
+    <tbody>
+        {% for acta in actas %}
+        <tr>
+            <td>{{ acta.id_infrac.id_driver.dni }}</td>
+            <td>{{ acta.id_infrac.id_driver.nombres }} {{ acta.id_infrac.id_driver.apellidos }}</td>
+            <td>{{ acta.id_infrac.retencion }}</td>
+            <td>{{ acta.fecha_reg }}</td>
+            <td>{{ acta.estado }}</td>
+            <td>
+                <a href="{% url 'editar_acta' acta.id %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'apelar_acta' acta.id %}" class="btn btn-sm btn-info">Apelar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
+
 {% endblock %}

@@ -21,7 +21,6 @@ class Conductor(models.Model):
 
 class Vehiculo(models.Model):
     placa = models.CharField(max_length=10)
-
     def __str__(self):
         return self.placa
 
