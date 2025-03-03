@@ -114,7 +114,7 @@ def apelar_acta(request, acta_id):
             apelacion.save()
             acta.estado = 'en_proceso'
             acta.save()
-            return redirect('lista_actas')
+            return redirect('dashboard')
     else:
         form = ApelarActaForm()
     return render(request, 'templates_actas/apelar_acta.html', {'form': form, 'acta': acta})
@@ -122,14 +122,28 @@ def apelar_acta(request, acta_id):
 @login_required
 def editar_acta(request, acta_id):
     acta = get_object_or_404(Acta, id=acta_id)
-    if request.method == 'POST':
-        form = ActaForm(request.POST, instance=acta)
-        if form.is_valid():
-            form.save()
-            return redirect('lista_actas')
-    else:
-        form = ActaForm(instance=acta)
-    return render(request, 'editar_acta.html', {'form': form})
+    infracciones = Infraccion.objects.all()
+
+    if request.method == "POST":
+        fecha_reg = request.POST.get("fecha_reg")
+        estado = request.POST.get("estado")
+        id_infrac = request.POST.get("id_infrac")
+
+        try:
+            infraccion = Infraccion.objects.get(id=id_infrac)
+
+            # Actualizar el acta
+            acta.fecha_reg = fecha_reg
+            acta.estado = estado
+            acta.id_infrac = infraccion
+            acta.save()
+
+            return redirect("dashboard")  # Redirige a la lista de actas
+
+        except Infraccion.DoesNotExist:
+            return render(request, "templates_actas/editar_acta.html", {"error": "Infracción no encontrada", "acta": acta, "infracciones": infracciones})
+
+    return render(request, "templates_actas/editar_acta.html", {"acta": acta, "infracciones": infracciones})
 
 @login_required
 def eliminar_acta(request, acta_id):
@@ -146,45 +160,83 @@ def insertar_infraccion(request):
     if request.method == "POST":
         fecha = request.POST.get("fecha_infrac")
         retencion = request.POST.get("retencion")
-        conductor_id = request.POST.get("id_driver_id")
-        vehiculo_id = request.POST.get("id_vehiculo_id")
+        id_driver = request.POST.get("id_driver")  # Nombre correcto
+        id_vehiculo = request.POST.get("id_vehiculo")  # Nombre correcto
+
+        print(f"Fecha: {fecha}")  # Depuración
+        print(f"Retención: {retencion}")  # Depuración
+        print(f"ID Conductor: {id_driver}")  # Depuración
+        print(f"ID Vehículo: {id_vehiculo}")  # Depuración
 
         try:
-            conductor = Conductor.objects.get(id=conductor_id)
-            vehiculo = Vehiculo.objects.get(id=vehiculo_id)
+            conductor = Conductor.objects.get(id=id_driver)  # Obtener el conductor
+            vehiculo = Vehiculo.objects.get(id=id_vehiculo)  # Obtener el vehículo
 
+            # Crear la infracción con los nombres de campos correctos
             Infraccion.objects.create(
                 fecha_infrac=fecha,
                 retencion=retencion,
-                conductor=conductor,
-                vehiculo=vehiculo
+                id_driver=conductor,  # Nombre correcto
+                id_vehiculo=vehiculo  # Nombre correcto
             )
-            return redirect("lista_infracciones")  # Redirige a la lista de infracciones
+            return redirect("dashboard")  # Redirige a la lista de infracciones
 
-        except Conductor.DoesNotExist or Vehiculo.DoesNotExist:
-            return render(request, "insertar_infraccion.html", {"error": "Conductor o vehículo no encontrado"})
+        except Conductor.DoesNotExist:
+            print("Conductor no encontrado")  # Depuración
+            return render(request, "templates_infraccion/insertar_infraccion.html", {"error": "Conductor no encontrado"})
+
+        except Vehiculo.DoesNotExist:
+            print("Vehículo no encontrado")  # Depuración
+            return render(request, "templates_infraccion/insertar_infraccion.html", {"error": "Vehículo no encontrado"})
 
     conductores = Conductor.objects.all()  # Obtener lista de conductores
     vehiculos = Vehiculo.objects.all()  # Obtener lista de vehículos
 
     return render(request, "templates_infraccion/insertar_infraccion.html", {"conductores": conductores, "vehiculos": vehiculos})
 
-def editar_infraccion(request, id):
-    infraccion = get_object_or_404(Infraccion, id=id)
+def editar_infraccion(request, infraccion_id):
+    # Obtener la infracción que se va a editar
+    infraccion = get_object_or_404(Infraccion, id=infraccion_id)
+    
+    # Obtener la lista de conductores y vehículos
+    conductores = Conductor.objects.all()
+    vehiculos = Vehiculo.objects.all()
+
     if request.method == "POST":
-        form = InfraccionForm(request.POST, instance=infraccion)
-        if form.is_valid():
-            form.save()
-            return redirect('listar_infracciones')
-    else:
-        form = InfraccionForm(instance=infraccion)
-    return render(request, 'templates_infraccion/editar_infraccion.html', {'form': form})
+        # Procesar el formulario enviado
+        fecha = request.POST.get("fecha_infrac")
+        retencion = request.POST.get("retencion")
+        id_driver = request.POST.get("id_driver")
+        id_vehiculo = request.POST.get("id_vehiculo")
+
+        try:
+            # Obtener el conductor y el vehículo seleccionados
+            conductor = Conductor.objects.get(id=id_driver)
+            vehiculo = Vehiculo.objects.get(id=id_vehiculo)
+
+            # Actualizar la infracción
+            infraccion.fecha_infrac = fecha
+            infraccion.retencion = retencion
+            infraccion.id_driver = conductor
+            infraccion.id_vehiculo = vehiculo
+            infraccion.save()
+
+            return redirect("dashboard")  # Redirige a la lista de infracciones
+
+        except Conductor.DoesNotExist:
+            return render(request, "templates_infraccion/editar_infraccion.html", {"error": "Conductor no encontrado", "infraccion": infraccion, "conductores": conductores, "vehiculos": vehiculos})
+
+        except Vehiculo.DoesNotExist:
+            return render(request, "templates_infraccion/editar_infraccion.html", {"error": "Vehículo no encontrado", "infraccion": infraccion, "conductores": conductores, "vehiculos": vehiculos})
+
+    # Si es una solicitud GET, mostrar el formulario con los datos actuales
+    return render(request, "templates_infraccion/editar_infraccion.html", {"infraccion": infraccion, "conductores": conductores, "vehiculos": vehiculos})
 
 def eliminar_infraccion(request, id):
     infraccion = get_object_or_404(Infraccion, id=id)
     if request.method == "POST":
         infraccion.delete()
-        return redirect('listar_infracciones')
+        return redirect('dashboard')
     return render(request, 'templates_infraccion/eliminar_infraccion.html', {'infraccion': infraccion})
 #-------------------CONDUCTORES--------------
 @login_required
@@ -211,7 +263,7 @@ def editar_conductor(request, conductor_id):
         form = ConductorForm(request.POST, instance=conductor)
         if form.is_valid():
             form.save()
-            return redirect('listar_conductores')  # Redirigir a la lista de conductores
+            return redirect('dashboard')  # Redirigir a la lista de conductores
     else:
         form = ConductorForm(instance=conductor)
     
@@ -221,7 +273,7 @@ def eliminar_conductor(request, conductor_id):
     conductor = get_object_or_404(Conductor, id=conductor_id)
     if request.method == 'POST':
         conductor.delete()
-        return redirect('listar_conductores')  # Redirigir a la lista de conductores
+        return redirect('dashboard')  # Redirigir a la lista de conductores
     
     return render(request, 'templates_drivers/eliminar_conductor.html', {'conductor': conductor})
 #----------------Vehiculos--------------------------------------------------------
@@ -241,7 +293,7 @@ def registrar_vehiculo(request):
 
         Vehiculo.objects.create(placa=placa)
         messages.success(request, "✅ Vehículo registrado exitosamente")
-        return redirect("listar_vehiculo")
+        return redirect("dashboard")
 
     return render(request, "templates_vehiculo/registrar_vehiculo.html")
 
@@ -255,7 +307,7 @@ def editar_vehiculo(request, id):
     if request.method == "POST":
         vehiculo.placa = request.POST.get("placa")
         vehiculo.save()
-        return redirect("lista_vehiculos")
+        return redirect("dashboard")
 
     return render(request, "templates_vehiculo/editar_vehiculo.html", {"vehiculo": vehiculo})
 
@@ -263,7 +315,7 @@ def eliminar_vehiculo(request, id):
     vehiculo = get_object_or_404(Vehiculo, id=id)
     if request.method == "POST":
         vehiculo.delete()
-        return redirect('listar_vehiculo')
+        return redirect('dashboard')
     return render(request, 'templates_vehiculo/eliminar_vehiculo.html', {'vehiculo': vehiculo})
 #---------------------------vista para editar usuario--------------------------------------------
 @login_required

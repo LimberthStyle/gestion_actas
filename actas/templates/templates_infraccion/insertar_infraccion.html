@@ -5,7 +5,7 @@
     <h1 class="text-center mb-4">Insertar Nueva Infracción</h1>
 
     <div class="card shadow-lg p-4">
-        <form method="post" action="{% url 'insertar_infraccion' %}">
+        <form method="post">
             {% csrf_token %}
 
             <div class="row mb-3">
@@ -27,8 +27,8 @@
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="id_driver_id" class="form-label">Conductor:</label>
-                    <select id="id_driver_id" name="id_driver_id" class="form-select" required>
+                    <label for="id_driver" class="form-label">Conductor:</label>
+                    <select id="id_driver" name="id_driver" class="form-select" required>
                         <option value="">Seleccione un conductor</option>
                         {% for conductor in conductores %}
                         <option value="{{ conductor.id }}">{{ conductor.nombres }}</option>
@@ -37,8 +37,8 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label for="id_vehiculo_id" class="form-label">Vehículo:</label>
-                    <select id="id_vehiculo_id" name="id_vehiculo_id" class="form-select" required>
+                    <label for="id_vehiculo" class="form-label">Vehículo:</label>
+                    <select id="id_vehiculo" name="id_vehiculo" class="form-select" required>
                         <option value="">Seleccione un vehículo</option>
                         {% for vehiculo in vehiculos %}
                         <option value="{{ vehiculo.id }}">{{ vehiculo.placa }}</option>

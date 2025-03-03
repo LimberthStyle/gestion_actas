@@ -47,6 +47,8 @@ class InfraccionForm(forms.ModelForm):
             'id_driver': forms.Select(attrs={'class': 'form-control'}),
             'id_vehiculo': forms.Select(attrs={'class': 'form-control'}),
         }
+
+
 #----------------------conductor------------------------------------------------------
 class ConductorForm(forms.ModelForm):
     class Meta:

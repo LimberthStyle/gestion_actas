@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Editar Acta</h1>
+
+    <div class="card shadow-lg p-4">
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Campo: Fecha de Registro -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="fecha_reg" class="form-label">Fecha de Registro:</label>
+                    <input type="date" id="fecha_reg" name="fecha_reg" class="form-control" value="{{ acta.fecha_reg|date:'Y-m-d' }}" required>
+                </div>
+
+                <!-- Campo: Estado -->
+                <div class="col-md-6">
+                    <label for="estado" class="form-label">Estado:</label>
+                    <select id="estado" name="estado" class="form-select" required>
+                        <option value="pagado" {% if acta.estado == "pagado" %}selected{% endif %}>Pagado</option>
+                        <option value="no_pagado" {% if acta.estado == "no_pagado" %}selected{% endif %}>No Pagado</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Campo: Infracción -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="id_infrac" class="form-label">Infracción:</label>
+                    <select id="id_infrac" name="id_infrac" class="form-select" required>
+                        <option value="">Seleccione una infracción</option>
+                        {% for infraccion in infracciones %}
+                        <option value="{{ infraccion.id }}" {% if infraccion.id == acta.id_infrac.id %}selected{% endif %}>
+                            {{ infraccion.id_driver.nombres }} {{ infraccion.id_driver.apellidos }} - {{ infraccion.retencion }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="d-flex justify-content-center gap-3">
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancelar</button>
+            </div>
+        </form>
+
+        <!-- Mensaje de error -->
+        {% if error %}
+        <p class="text-danger text-center mt-3">{{ error }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

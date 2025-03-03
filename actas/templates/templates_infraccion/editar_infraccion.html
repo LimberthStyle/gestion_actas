@@ -1,17 +1,67 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2 class="text-center mb-4">Editar Infracción</h2>
-<div class="card">
-    <div class="card-body">
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Editar Infracción</h1>
+
+    <div class="card shadow-lg p-4">
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
-            <div class="d-flex justify-content-center gap-2">
+
+            <!-- Campo: Fecha de la infracción -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="fecha_infrac" class="form-label">Fecha de la infracción:</label>
+                    <input type="datetime-local" id="fecha_infrac" name="fecha_infrac" class="form-control" value="{{ infraccion.fecha_infrac|date:'Y-m-d\TH:i' }}" required>
+                </div>
+
+                <!-- Campo: Retención -->
+                <div class="col-md-6">
+                    <label for="retencion" class="form-label">Retención:</label>
+                    <select id="retencion" name="retencion" class="form-select" required>
+                        <option value="Revision tecnica" {% if infraccion.retencion == "Revision tecnica" %}selected{% endif %}>Revisión técnica</option>
+                        <option value="SOAT" {% if infraccion.retencion == "SOAT" %}selected{% endif %}>SOAT</option>
+                        <option value="Cinturon de seguridad" {% if infraccion.retencion == "Cinturon de seguridad" %}selected{% endif %}>Cinturón de seguridad</option>
+                        <option value="Otras faltas" {% if infraccion.retencion == "Otras faltas" %}selected{% endif %}>Otras faltas</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Campo: Conductor -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="id_driver" class="form-label">Conductor:</label>
+                    <select id="id_driver" name="id_driver" class="form-select" required>
+                        <option value="">Seleccione un conductor</option>
+                        {% for conductor in conductores %}
+                        <option value="{{ conductor.id }}" {% if conductor.id == infraccion.id_driver.id %}selected{% endif %}>{{ conductor.nombres }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Campo: Vehículo -->
+                <div class="col-md-6">
+                    <label for="id_vehiculo" class="form-label">Vehículo:</label>
+                    <select id="id_vehiculo" name="id_vehiculo" class="form-select" required>
+                        <option value="">Seleccione un vehículo</option>
+                        {% for vehiculo in vehiculos %}
+                        <option value="{{ vehiculo.id }}" {% if vehiculo.id == infraccion.id_vehiculo.id %}selected{% endif %}>{{ vehiculo.placa }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="d-flex justify-content-center gap-3">
                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                <button type="button" class="btn btn-secondary" onclick="window.history.back();">Atrás</button>
+                <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancelar</button>
             </div>
         </form>
+
+        <!-- Mensaje de error -->
+        {% if error %}
+        <p class="text-danger text-center mt-3">{{ error }}</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
