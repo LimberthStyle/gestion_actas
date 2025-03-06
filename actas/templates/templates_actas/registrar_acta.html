@@ -1,25 +1,34 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
 {%block content%}
 <div class="container mt-5">
-    <h2>Registrar Acta</h2>
-    <form method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="propietario">Propietario:</label>
-            {{ form.propietario }}
-        </div>
-        <div class="form-group">
-            <label for="estado">Estado:</label>
-            {{ form.estado }}
-        </div>
-        <div class="form-group">
-            <label for="id_infrac">ID de Infracción:</label>
-            {{ form.id_infrac }}
-        </div>
-        <button type="submit" class="btn btn-primary">Guardar</button>
-    </form>
+    <h1 class="text-center mb-4">Registrar Acta</h1>
+
+    <div class="card shadow-lg p-4">
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="propietario" class="form-label">Propietario:</label>
+                {{ form.propietario }}
+            </div>
+            <div class="col-md-6">
+                <label for="estado" class="form-label">Estado:</label>
+                {{ form.estado }}
+                {% if form.estado.errors %}
+                <div class="alert alert-danger">
+                    {{ form.estado.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label for="id_infrac" class="form-label">ID de Infracción:</label>
+                {{ form.id_infrac }}
+            </div>
+            <div class="d-flex justify-content-center gap-3">
+                <button type="submit" class="btn btn-primary">Guardar Acta</button>
+                <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancelar</button>
+            </div>
+    </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+</form>
 {%endblock%}

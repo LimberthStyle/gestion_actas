@@ -5,7 +5,7 @@ class Usuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     mail = models.EmailField()
     psw = models.CharField(max_length=50)
-    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    
 
     def __str__(self):
         return f'{self.user.username} Profile'
@@ -37,13 +37,15 @@ class Acta(models.Model):
     id = models.AutoField(primary_key=True)
     propietario = models.CharField(max_length=100)
     estado = models.CharField(max_length=50, choices=[
-        ('absuelto', 'Absuelto'),
-        ('pagado', 'Pagado'),
-        ('no_pagado', 'No Pagado'),
-        ('anulado', 'Anulado'),
-        ('en_proceso', 'En Proceso'),
+        ('Pagado', 'Pagado'),
+        ('No pagado', 'No Pagado'),
     ])
     fecha_reg = models.DateField(auto_now_add=True)
+    estado_apelacion = models.CharField(default='-', max_length=50, choices=[
+        ('En proceso', 'En proceso'),
+        ('Absuelto', 'Absuelto'),
+        ('Rechazado', 'Rechazado')
+    ])
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     id_infrac = models.ForeignKey(Infraccion, on_delete=models.CASCADE)
     # No necesitamos un campo separado para el conductor
@@ -57,5 +59,16 @@ class Apelacion(models.Model):
     documentos = models.FileField(upload_to='apelaciones/')
     fecha = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        """Al guardar una apelación, actualizar el estado de apelación del acta."""
+        if self.acta.estado == 'Pagado':
+            self.acta.estado_apelacion = 'Absuelto'
+        else:
+            self.acta.estado_apelacion = 'En proceso'
+
+        self.acta.save()  # Guardar el estado actualizado del acta
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Apelación {self.acta.id} - {self.fecha}"
+

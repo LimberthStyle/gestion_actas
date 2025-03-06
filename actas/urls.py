@@ -34,5 +34,10 @@ urlpatterns = [
     path('insertar_infraccion/', views.insertar_infraccion, name='insertar_infraccion'),
     path('editar_infraccion/<int:infraccion_id>/', views.editar_infraccion, name='editar_infraccion'),
     path('eliminar_infraccion/<int:id>/', views.eliminar_infraccion, name='eliminar_infraccion'),
-    
+    #-----------------------------Apleacion--------------------------------------------------
+    path('lista_apelacion/<int:id>/', views.lista_apelacion, name='lista_apelacion'),
+    #-----------------------------------REPORTES---------------------------------------------------
+    path('reportes-p/', views.reporte_actas_pagadas, name='reporte_pagados'),
+    path('reportes-np/', views.reporte_actas_no_pagadas, name='reportes_no_pagados'),
+    path('reportes-ap/', views.reporte_actas_apeladas, name='reporte_actas_apeladas'),
 ]

@@ -7,6 +7,9 @@ class LoginForm(forms.Form):
     mail = forms.EmailField()
     psw = forms.CharField(widget=forms.PasswordInput)
 
+from django import forms
+from .models import Acta
+
 class ActaForm(forms.ModelForm):
     class Meta:
         model = Acta

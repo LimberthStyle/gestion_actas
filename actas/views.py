@@ -1,17 +1,22 @@
 import json
+import os
 import re
+import tempfile
+from reportlab.pdfgen import canvas
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from .models import Acta, Conductor, Infraccion, Vehiculo
+from .models import Acta, Apelacion, Conductor, Infraccion, Vehiculo
 from .forms import ConductorForm, InfraccionForm, LoginForm, ActaForm, ApelarActaForm, RegistroForm, EditUserForm, EditUserPasswordForm
 from django.db.models import Q
 from django.utils import timezone
 from datetime import datetime
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-
+from django.http import HttpResponse, JsonResponse
+from django.template.loader import get_template
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.utils import ImageReader
 #BASE------------------------------------------
 def inicio(request):
     return render(request, 'login.html')
@@ -66,6 +71,7 @@ def dashboard(request):
     conductores = Conductor.objects.all()  # Obtén todos los conductores
     vehiculos = Vehiculo.objects.all()
     infractions = Infraccion.objects.all()
+    apelaciones = Apelacion.objects.all()
     
     return render(request, 'dashboard.html', {
         # MUESTRA ESTADISTICAS
@@ -77,6 +83,7 @@ def dashboard(request):
         'conductores': conductores,
         'vehiculos': vehiculos,
         'infractions': infractions,
+        'apelaciones': apelaciones,
     })
 
 @login_required
@@ -84,39 +91,45 @@ def registrar_acta(request):
     if request.method == 'POST':
         form = ActaForm(request.POST)
         if form.is_valid():
+            print("Formulario válido")  # Depuración
             acta = form.save(commit=False)
             acta.usuario = request.user
             acta.save()
+            print("Acta guardada")  # Depuración
             return redirect('dashboard')
+        else:
+            print("Formulario no válido")  # Depuración
+            print(form.errors)  # Depuración
     else:
         form = ActaForm()
     return render(request, 'templates_actas/registrar_acta.html', {'form': form})
 
 @login_required
 def lista_actas(request):
-    query = request.GET.get('q', '')
-    actas = Acta.objects.filter(
-        Q(id__icontains=query) |
-        Q(id_infrac__id_driver__dni__icontains=query) |
-        Q(id_infrac__id_driver__nombres__icontains=query) |
-        Q(id_infrac__id_driver__apellidos__icontains=query)
-    ) if query else Acta.objects.all()
-    return render(request, 'templates_actas/lista_actas.html', {'actas': actas})
+    query = request.GET.get('dni', '')  # Obtener el valor del campo de búsqueda
+    actas = Acta.objects.all()
+
+    if query:
+        actas = actas.filter(id_infrac__id_driver__dni__icontains=query)  # Filtrar por DNI
+
+    return render(request, 'templates_actas/lista_actas.html', {'actas': actas, 'query': query})
+
 
 @login_required
 def apelar_acta(request, acta_id):
-    acta = get_object_or_404(Acta, id=acta_id)
+    acta = Acta.objects.get(id=acta_id)
+
     if request.method == 'POST':
         form = ApelarActaForm(request.POST, request.FILES)
         if form.is_valid():
             apelacion = form.save(commit=False)
             apelacion.acta = acta
             apelacion.save()
-            acta.estado = 'en_proceso'
-            acta.save()
-            return redirect('dashboard')
+            return redirect('dashboard')  # Redirige a la lista de actas
+
     else:
         form = ApelarActaForm()
+
     return render(request, 'templates_actas/apelar_acta.html', {'form': form, 'acta': acta})
 
 @login_required
@@ -359,3 +372,203 @@ def dashboard_view(request):
         'porcentaje_infracciones': round(porcentaje_infracciones, 2),
     }
     return render(request, 'dashboard.html', context)
+#------------Apelacion-----------------------------------------
+def lista_apelacion(request):
+    apelaciones = Apelacion.objects.all()
+    return render(request, 'apelaciones.html', {'apelaciones': apelaciones})
+
+####--------------reports----------########################
+def reporte_actas_pagadas(request):
+    # Filtrar solo los conductores con actas pagadas
+    actas_pagadas = Acta.objects.filter(estado='Pagado')
+    total_conductores = actas_pagadas.count()
+
+    # Crear respuesta en PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="Actas_pagadas.pdf"'
+
+    # Crear el PDF
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+
+    # -------------- AGREGAR LOGO --------------
+    logo_path = os.path.join(os.getcwd(), "actas/static/images/DRTC_LOGO.png")
+    if os.path.exists(logo_path):
+        logo = ImageReader(logo_path)
+        p.drawImage(logo, 10, height - 50, width=100, height=40, preserveAspectRatio=True, mask='auto')
+
+    # -------------- TÍTULO --------------
+    p.setFont("Helvetica-Bold", 14)
+    p.drawCentredString(width / 2, height - 50, "Reporte de Actas pagadas")
+
+    # -------------- ENCABEZADOS DE TABLA --------------
+    p.setFont("Helvetica-Bold", 10)
+    y_position = height - 100
+
+    headers = ["DNI", "Nombre Completo", "Licencia", "Placa", "Propietario", "Fecha Infracción", "Estado"]
+    x_positions = [40, 110, 250, 300, 350, 450, 550]  # Ajuste para mostrar "Estado"
+
+    for i, header in enumerate(headers):
+        p.drawString(x_positions[i], y_position, header)
+
+    # Línea divisoria
+    p.line(30, y_position - 5, width - 30, y_position - 5)
+
+    # -------------- DATOS DE CONDUCTORES --------------
+    p.setFont("Helvetica", 9)
+    y_position -= 20
+
+    for acta in actas_pagadas:
+        conductor = acta.id_infrac.id_driver
+        vehiculo = acta.id_infrac.id_vehiculo
+
+        p.drawString(x_positions[0], y_position, conductor.dni)
+        p.drawString(x_positions[1], y_position, f"{conductor.nombres} {conductor.apellidos}")
+        p.drawString(x_positions[2], y_position, conductor.cat_licen)
+        p.drawString(x_positions[3], y_position, vehiculo.placa if vehiculo else "N/A")
+        p.drawString(x_positions[4], y_position, acta.propietario[:15])  # Reducimos el texto largo
+        p.drawString(x_positions[5], y_position, acta.id_infrac.fecha_infrac.strftime("%d-%m-%Y %H:%M"))
+        p.drawString(x_positions[6], y_position, acta.estado)  # ✅ Ahora el Estado se muestra bien
+
+        y_position -= 20  # Espacio entre filas
+        if y_position < 50:  # Salto de página si es necesario
+            p.showPage()
+            y_position = height - 50
+
+    # -------------- TOTAL DE CONDUCTORES PAGADOS --------------
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(40, y_position - 30, f"Total de Actas Pagadas: {total_conductores}")
+
+    # Guardar el PDF
+    p.showPage()
+    p.save()
+    return response
+
+def reporte_actas_no_pagadas(request):
+    # Filtrar solo los conductores con actas pagadas
+    actas_pagadas = Acta.objects.filter(Q(estado="No Pagado") | Q(estado="no_pagado"))
+    total_conductores = actas_pagadas.count()
+
+    # Crear respuesta en PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="Actas_no_pagadas.pdf"'
+
+    # Crear el PDF
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+
+    # -------------- AGREGAR LOGO --------------
+    logo_path = os.path.join(os.getcwd(), "actas/static/images/DRTC_LOGO.png")
+    if os.path.exists(logo_path):
+        logo = ImageReader(logo_path)
+        p.drawImage(logo, 10, height - 50, width=100, height=40, preserveAspectRatio=True, mask='auto')
+
+    # -------------- TÍTULO --------------
+    p.setFont("Helvetica-Bold", 14)
+    p.drawCentredString(width / 2, height - 50, "Reporte de Actas No Pagadas")
+
+    # -------------- ENCABEZADOS DE TABLA --------------
+    p.setFont("Helvetica-Bold", 10)
+    y_position = height - 100
+
+    headers = ["DNI", "Nombre Completo", "Licencia", "Placa", "Propietario", "Fecha Infracción", "Estado"]
+    x_positions = [40, 110, 250, 300, 350, 450, 550]  # Ajuste para mostrar "Estado"
+
+    for i, header in enumerate(headers):
+        p.drawString(x_positions[i], y_position, header)
+
+    # Línea divisoria
+    p.line(30, y_position - 5, width - 30, y_position - 5)
+
+    # -------------- DATOS DE CONDUCTORES --------------
+    p.setFont("Helvetica", 9)
+    y_position -= 20
+
+    for acta in actas_pagadas:
+        conductor = acta.id_infrac.id_driver
+        vehiculo = acta.id_infrac.id_vehiculo
+
+        p.drawString(x_positions[0], y_position, conductor.dni)
+        p.drawString(x_positions[1], y_position, f"{conductor.nombres} {conductor.apellidos}")
+        p.drawString(x_positions[2], y_position, conductor.cat_licen)
+        p.drawString(x_positions[3], y_position, vehiculo.placa if vehiculo else "N/A")
+        p.drawString(x_positions[4], y_position, acta.propietario[:15])  # Reducimos el texto largo
+        p.drawString(x_positions[5], y_position, acta.id_infrac.fecha_infrac.strftime("%d-%m-%Y %H:%M"))
+        p.drawString(x_positions[6], y_position, acta.estado)  # ✅ Ahora el Estado se muestra bien
+
+        y_position -= 20  # Espacio entre filas
+        if y_position < 50:  # Salto de página si es necesario
+            p.showPage()
+            y_position = height - 50
+
+    # -------------- TOTAL DE CONDUCTORES PAGADOS --------------
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(40, y_position - 30, f"Total de Actas No Pagadas: {total_conductores}")
+
+    # Guardar el PDF
+    p.showPage()
+    p.save()
+    return response
+########################APELACIONES########################
+def reporte_actas_apeladas(request):
+    # Crear respuesta como PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="reporte_actas_apeladas.pdf"'
+
+    # Crear el canvas de ReportLab
+    c = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+
+    # Agregar logo si existe
+    logo_path = os.path.join(os.getcwd(), "actas/static/images/DRTC_LOGO.png")
+    if os.path.exists(logo_path):
+        logo = ImageReader(logo_path)
+        c.drawImage(logo, 10, height - 50, width=100, height=40, preserveAspectRatio=True, mask='auto')
+
+    # Título
+    c.setFont("Helvetica-Bold", 14)
+    c.drawCentredString(width / 2, height - 50, "Reporte de Actas Apeladas")
+
+    # Encabezados de tabla
+    c.setFont("Helvetica-Bold", 10)
+    headers = ["DNI", "Nombre Completo", "Retención", "Fecha Reg.", "Estado Apelación"]
+    x_positions = [50, 120, 250, 350, 450]
+    
+    for i, header in enumerate(headers):
+        c.drawString(x_positions[i], height - 100, header)
+
+    c.line(50, height - 105, 550, height - 105)
+
+    # Obtener actas apeladas
+    actas_apeladas = Acta.objects.exclude(estado_apelacion="-")
+    total_apeladas = actas_apeladas.count()
+
+    # Agregar datos a la tabla
+    y_position = height - 120
+    c.setFont("Helvetica", 9)
+
+    for acta in actas_apeladas:
+        conductor = acta.id_infrac.id_driver
+        datos = [
+            conductor.dni,
+            f"{conductor.nombres} {conductor.apellidos}",
+            acta.id_infrac.retencion,
+            acta.fecha_reg.strftime("%d-%m-%Y"),
+            acta.estado_apelacion
+        ]
+
+        for i, dato in enumerate(datos):
+            c.drawString(x_positions[i], y_position, str(dato))
+
+        y_position -= 15
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 100
+
+    # Total de actas apeladas
+    c.setFont("Helvetica-Bold", 10)
+    c.drawString(50, y_position - 20, f"Total de Actas Apeladas: {total_apeladas}")
+
+    # Guardar y retornar PDF
+    c.save()
+    return response

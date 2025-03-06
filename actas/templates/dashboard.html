@@ -12,12 +12,7 @@
             <button class="sidebar-toggle bg-dark" onclick="toggleSidebar()">&#9776;</button>
         </div>
         <ul class="contenedor-menu">
-            <li>
-                <a href="#dashboard">
-                    <i class="fas fa-tachometer-alt"></i> <!-- Icono de dashboard -->
-                    <span class="menu-text">DASHBOARD</span>
-                </a>
-            </li>
+            
             <li>
                 <a href="#actas">
                     <i class="fas fa-file-alt"></i>
@@ -43,6 +38,22 @@
                 </a>
             </li>
             <li>
+                <a href="#apelaciones">
+                    <i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-journal-bookmark" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M6 8V1h1v6.117L8.743 6.07a.5.5 0 0 1 .514 0L11 7.117V1h1v7a.5.5 0 0 1-.757.429L9 7.083 6.757 8.43A.5.5 0 0 1 6 8" />
+                            <path
+                                d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2" />
+                            <path
+                                d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z" />
+                        </svg>
+                    </i>
+                    <span class="menu-text">APELACIONES</span>
+                </a>
+            </li>
+            <li>
                 <a href="#reportes">
                     <i class="fas fa-chart-bar"></i>
                     <span class="menu-text">REPORTES</span>
@@ -52,42 +63,14 @@
     </div>
     <!-- Contenido principal del dashboard -->
     <div class="dashboard-content" id="dashboard-content">
-        <div id="dashboard" class="content-section active">
-            <div class="container mt-5">
-                <h1 class="text-center">ESTADISTICAS SEMANALES</h1>
-                <div class="row justify-content-center">
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100 border-dark text-bg-info mb-3">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">Total de Actas Registradas</h5>
-                                <p class="card-text display-4">{{ total_actas_registradas }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100 border-dark text-bg-warning mb-3">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">Total de Actas Apeladas</h5>
-                                <p class="card-text display-4">{{ total_actas_apeladas }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100 border-dark text-bg-danger mb-3">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">Porcentaje de Infracciones</h5>
-                                <p class="card-text display-4">{{ porcentaje_infracciones }}%</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
         <div id="actas" class="content-section">{% include 'templates_actas/lista_actas.html' %}</div>
         <div id="conductores" class="content-section">{% include 'templates_drivers/listar_conductor.html' %}</div>
         <div id="vehiculos" class="content-section">{% include 'templates_vehiculo/listar_vehiculo.html' %}</div>
         <div id="infracciones" class="content-section">{% include 'templates_infraccion/listar_infraccion.html' %}</div>
+        <div id="apelaciones" class="content-section">{% include 'apelaciones.html' %}</div>
         <div id="reportes" class="content-section">{% include 'reportes.html' %}</div>
+   
     </div>
 </div>
 

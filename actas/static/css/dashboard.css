@@ -200,7 +200,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: center; /* Centrar las tarjetas horizontalmente */
-    gap: 20px; /* Espacio entre las tarjetas */
+    gap: 50px; /* Espacio entre las tarjetas */
 }
 
 .card {
@@ -240,7 +240,7 @@ body {
 /* Estilos responsivos */
 @media (max-width: 768px) {
     .card {
-        width: calc(50% - 20px); /* Dos tarjetas por fila en pantallas medianas */
+        width: calc(50% - 50px); /* Dos tarjetas por fila en pantallas medianas */
         height: 150px; /* Mantener la altura */
     }
 }

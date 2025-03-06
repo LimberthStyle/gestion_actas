@@ -5,13 +5,13 @@
 <!-- Encabezado -->
 <h2 class="text-center mb-4">ACTAS</h2>
 <!-- Barra de búsqueda y botón de Registrar en la misma línea -->
+<!-- Formulario de búsqueda -->
+<form method="GET" action="{% url 'lista_actas' %}" class="mb-4 d-flex">
+    <input type="text" name="dni" class="form-control me-2" placeholder="Buscar por DNI" value="{{ query }}">
+    <button type="submit" class="btn btn-primary">Buscar</button>
+</form>
+
 <div class="d-flex align-items-center mb-4">
-    <!-- Formulario de búsqueda -->
-    <form method="get" class="d-flex flex-grow-1 me-3">
-        <input type="text" name="q" class="form-control" placeholder="Buscar por nombre, DNI o código"
-            value="{{ request.GET.q }}">
-        <button type="submit" class="btn btn-primary ms-2">Buscar</button>
-    </form>
 
     <!-- Botón de Registrar Acta -->
     <a class="btn btn-success" href="{% url 'registrar_acta' %}">
@@ -72,8 +72,8 @@
                     </svg>
                 </a>
             </td>
-            <td>
-                
+            <td class="text-center">
+                {{ acta.estado_apelacion }}
             </td>
         </tr>
         {% endfor %}
