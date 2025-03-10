@@ -7,7 +7,12 @@
 <!-- Barra de búsqueda y botón de Registrar en la misma línea -->
 <!-- Formulario de búsqueda -->
 <form method="GET" action="{% url 'lista_actas' %}" class="mb-4 d-flex">
-    <input type="text" name="dni" class="form-control me-2" placeholder="Buscar por DNI" value="{{ query }}">
+    <input type="text" name="dni" class="form-control me-2" 
+       placeholder="Buscar por DNI" value="{{ query }}" 
+       maxlength="8" pattern="\d{8}" 
+       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 8);" 
+       title="Ingrese un DNI válido de 8 dígitos">
+
     <button type="submit" class="btn btn-primary">Buscar</button>
 </form>
 

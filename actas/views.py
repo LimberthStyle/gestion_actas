@@ -126,7 +126,8 @@ def apelar_acta(request, acta_id):
             apelacion.acta = acta
             apelacion.save()
             return redirect('dashboard')  # Redirige a la lista de actas
-
+        else:
+            print(form.errors)  # Imprime errores del formulario para depuración
     else:
         form = ApelarActaForm()
 

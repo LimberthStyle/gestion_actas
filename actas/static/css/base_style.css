@@ -84,7 +84,7 @@ body {
     padding-top: 80px; /* Añade un padding superior para separar del navbar */
     padding-bottom: 60px; /* Añade un padding inferior para separar del footer */
     transition: margin-left 0.3s;
-    background-color: #f8f9fa; /* Color de fondo para el contenedor principal */
+    background-color: #DDD0C8; /* Color de fondo para el contenedor principal */
 }
 
 /* Estilos para el contenedor interno */

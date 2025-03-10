@@ -2,15 +2,17 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2 class="text-center mb-4">APELACIONES</h2>
-    
+    <h2 class="text-center mb-4">
+        📄 APELACIONES
+    </h2>
+
     <div class="table-responsive">
-        <table class="table table-striped table-bordered table-hover">
-            <thead class="thead-dark">
+        <table class="table table-striped table-bordered table-hover shadow-sm">
+            <thead class="bg-dark text-white text-center">
                 <tr>
-                    <th class="text-center">FECHA</th>
-                    <th class="text-center">ASUNTO</th>
-                    <th class="text-center">DOCUMENTOS</th>
+                    <th>📅 FECHA</th>
+                    <th>📝 ASUNTO</th>
+                    <th>📂 DOCUMENTOS</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,8 +22,8 @@
                     <td class="align-middle">{{ apelacion.asunto }}</td>
                     <td class="align-middle text-center">
                         {% if apelacion.documentos %}
-                            <a href="{{ apelacion.documentos.url }}" target="_blank">
-                                Ver Documento
+                            <a href="{{ apelacion.documentos.url }}" target="_blank" class="btn btn-dark btn-sm">
+                                <i class="fas fa-file-pdf"></i> {{apelacion.documentos}}
                             </a>
                         {% else %}
                             <span class="text-muted">No disponible</span>

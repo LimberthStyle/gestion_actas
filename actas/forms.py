@@ -19,6 +19,9 @@ class ApelarActaForm(forms.ModelForm):
     class Meta:
         model = Apelacion
         fields = ['asunto', 'documentos']
+        widgets = {
+            'asunto': forms.Textarea(attrs={'required': True}),
+        }
 
 class RegistroForm(UserCreationForm):
     email = forms.EmailField(required=True)

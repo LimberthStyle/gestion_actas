@@ -8,7 +8,7 @@
             <h2 class="card-subtitle">Acta de: {{ acta.id_infrac.id_driver.nombres }}</h2>
         </div>
         <div class="card-body">
-            <form method="post" enctype="multipart/form-data">
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 
                 <!-- Campo de Documentos -->
@@ -20,8 +20,8 @@
 
                 <!-- Campo de Comentarios -->
                 <div class="form-group mb-4">
-                    <label for="id_comentarios" class="form-label fw-bold">Asunto</label>
-                    <textarea class="form-control" id="id_comentarios" name="comentarios" rows="4" placeholder="Añade cualquier comentario adicional que consideres relevante."></textarea>
+                    <label for="id_asunto" class="form-label fw-bold">Asunto</label>
+                    <textarea class="form-control" id="id_asunto" name="asunto" rows="4" placeholder="Añade cualquier comentario adicional que consideres relevante."></textarea>
                 </div>
 
                 <!-- Botón de Enviar -->

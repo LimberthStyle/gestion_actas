@@ -1,22 +1,57 @@
 {% extends "base.html" %}
 
 {% load static %}
-{%block content%}
+
+{% block content %}
 <div class="container mt-5">
-    <h2>Editar Usuario</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ user_form.as_p }}
-        <h3>Cambiar Contraseña</h3>
-        {{ password_form.as_p }}
-        <table>
-            <td>
-                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-            </td>
-            <td>
-                <button type="button" class="btn btn-secondary" onclick="window.history.back();">Atrás</button>
-            </td>
-        </table>
-    </form>
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center mb-4">✏️ Editar Usuario</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Sección de edición de usuario -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Nombre de usuario:</label>
+                {{ user_form.username }}
+
+                <label class="form-label fw-bold mt-3">Email:</label>
+                {{ user_form.email }}
+            </div>
+
+            <!-- Sección de cambio de contraseña -->
+            <h3 class="mt-4">🔒 Cambiar Contraseña</h3>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Contraseña antigua:</label>
+                {{ password_form.old_password }}
+
+
+
+                <div class="small text-muted mt-2">
+                    <label class="form-label fw-bold mt-3">Contraseña nueva:</label>
+                    {{ password_form.new_password1 }}
+
+                    <label class="form-label fw-bold mt-3">Confirmar nueva contraseña:</label>
+                    {{ password_form.new_password2 }}
+                    <ul>
+                        <li>Debe contener al menos 8 caracteres.</li>
+                        <li>No puede ser similar a su información personal.</li>
+                        <li>No debe ser una clave utilizada comúnmente.</li>
+                        <li>No debe ser completamente numérica.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="d-flex justify-content-between mt-4">
+                <button type="submit" class="btn btn-primary">
+                    💾 Guardar Cambios
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="window.history.back();">
+                    ⬅️ Atrás
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
-{%endblock%}
+{% endblock %}

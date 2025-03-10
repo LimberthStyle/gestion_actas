@@ -7,7 +7,7 @@
     <div class="row justify-content-center">
         <!-- Total de Actas Registradas -->
         <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow border-dark text-bg-info">
+            <div class="card h-100 shadow-lg border-0 text-bg-info">
                 <div class="card-body text-center">
                     <h5 class="card-title fw-bold">📄 Total de Actas Registradas</h5>
                     <p class="card-text display-4 fw-bold">{{ total_actas_registradas }}</p>
@@ -17,7 +17,7 @@
 
         <!-- Total de Actas Apeladas -->
         <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow border-dark text-bg-warning">
+            <div class="card h-100 shadow-lg border-0 text-bg-warning">
                 <div class="card-body text-center">
                     <h5 class="card-title fw-bold">⚖️ Total de Actas Apeladas</h5>
                     <p class="card-text display-4 fw-bold">{{ total_actas_apeladas }}</p>
@@ -27,7 +27,7 @@
 
         <!-- Porcentaje de Infracciones -->
         <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow border-dark text-bg-danger">
+            <div class="card h-100 shadow-lg border-0 text-bg-danger">
                 <div class="card-body text-center">
                     <h5 class="card-title fw-bold">🚨 Porcentaje de Infracciones</h5>
                     <p class="card-text display-4 fw-bold">{{ porcentaje_infracciones }}%</p>
@@ -37,27 +37,44 @@
     </div>
 
     <!-- Sección de Reportes -->
-     <H1 class="text-center">REPORTES</H1>
-    <div class="content-center mt-4">
-        <div>
-            <H4>REPORTES DE ACTAS PAGADAS</H4>
-            <a href="{% url 'reporte_pagados' %}" class="btn btn-success">
-                GENERAR PDF
-            </a>
+    <h1 class="text-center mt-5">📑 REPORTES</h1>
+
+    <div class="row mt-4">
+        <!-- Reporte de Actas Pagadas -->
+        <div class="col-md-4 mb-3">
+            <div class="card text-bg-success shadow-lg">
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold">💰 Reportes de Actas Pagadas</h5>
+                    <a href="{% url 'reporte_pagados' %}" class="btn btn-light fw-bold">
+                        <i class="fas fa-file-pdf"></i> Generar PDF
+                    </a>
+                </div>
+            </div>
         </div>
-        <div>
-            <H4>RREPORTES DE ACTAS NO PAGADAS</H4>
-            <a href="{% url 'reportes_no_pagados' %}" class="btn btn-danger">
-                GENERAR PDF
-            </a>
+
+        <!-- Reporte de Actas No Pagadas -->
+        <div class="col-md-4 mb-3">
+            <div class="card text-bg-danger shadow-lg">
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold">❌ Reportes de Actas No Pagadas</h5>
+                    <a href="{% url 'reportes_no_pagados' %}" class="btn btn-light fw-bold">
+                        <i class="fas fa-file-pdf"></i> Generar PDF
+                    </a>
+                </div>
+            </div>
         </div>
-        <div>
-            <H4>REPORTES DE ACTAS APELADAS</H4>
-            <a href="{% url 'reporte_actas_apeladas' %}" class="btn btn-warning">
-                GENERAR PDF
-            </a>
+
+        <!-- Reporte de Actas Apeladas -->
+        <div class="col-md-4 mb-3">
+            <div class="card text-bg-warning shadow-lg">
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold">⚖️ Reportes de Actas Apeladas</h5>
+                    <a href="{% url 'reporte_actas_apeladas' %}" class="btn btn-light fw-bold">
+                        <i class="fas fa-file-pdf"></i> Generar PDF
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
-
 </div>
 {% endblock %}
